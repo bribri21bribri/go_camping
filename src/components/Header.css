@@ -1,0 +1,151 @@
+body{
+    font-family: Arial, Helvetica, sans-serif,'微軟正黑體';
+}
+a:link{
+    text-decoration: none;
+}
+
+.maxWidth{
+    max-width: 1140px;
+}
+.transition {
+    transition: .5s;
+}
+
+.mar-center {
+    margin: 0 auto;
+}
+
+.z-index {
+    z-index: 5;
+}
+
+.transition {
+    transition: 0.5s;
+}
+.img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.row{
+    margin-left: 0;
+    margin-right: 0;
+}
+.main_color{
+    color: #87B061;
+}
+.bg_main_color{
+    background-color: #87B061;
+}
+
+.bg_main_color:hover{
+    background-color: #027252;
+}
+.btn_border_main{
+    border: 1px solid #87B061;
+}
+.sec_color{
+    color:#027252;
+}
+.color_yellow{
+    color:#F2CE63;
+}
+.color_gray{
+    color:rgb(95, 93, 93);
+}
+.color_red{
+    color:#f26666;
+}
+
+.logo_box{
+    width: 175px;
+    height: 64x;
+}
+nav{
+    padding:8px 16px; 
+    box-shadow: 0 2px 6px 0 #BFDD87;
+    background-color: #fff;
+}
+nav ul{
+    margin: 0;
+    /* padding: 0 16px; */
+}
+.searchBar{
+    border:1px solid #87B061; 
+    border-radius: 5px; 
+    height: 40px;
+    flex-wrap: nowrap;
+}
+.searchBar input{
+    border:none;
+}
+.show{
+    font-weight: 700;
+}
+.nav_menu li:hover a{
+    color: #F2CE63;
+}
+.show::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #F2CE63;
+}
+@media (min-width:768px) {
+    .times, .times_logo, .bars{
+        display: none;
+    }
+}
+@media (max-width:768px) {
+    .searchBar, .login{
+        display: none;
+    }
+    nav ul{
+        display: block;
+    }
+    .nav_menu{
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+        /* width: 0;
+        height: 0; */
+        overflow: hidden;
+        top:0;
+        left: 0;
+        padding: 2rem 0;
+        text-align: center;
+        /* display: block; */
+        display: none;
+        /* opacity: 0; */
+        background-color: #fff;
+        z-index: 10;
+        transition: .5s;
+    }
+    .nav_menu li{
+        padding: 1rem 0;
+        margin: 0 16px;
+    }
+    .nav_menu li a::before{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: #87B061;
+    }
+    .bars{
+        font-size: 2rem;
+        cursor: pointer;
+    }
+    .times{
+        font-size: 2rem;
+    }
+    .show::after{
+        display: none;
+    }
+}
