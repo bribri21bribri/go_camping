@@ -33,20 +33,26 @@ class Carousel extends Component {
   
 
   
-  setInterval(() => {
-    if(this.state.slide< 4){
-      this.setState({slide:this.state.slide+1})
-    }else{
-      this.setState({slide:0})
-    }
-  }, 3000);
+  // setInterval(() => {
+  //   if(this.state.slide< 4){
+  //     this.setState({slide:this.state.slide+1})
+  //   }else{
+  //     this.setState({slide:0})
+  //   }
+  // }, 3000);
   }
   toNextSlide=()=>{
     this.setState({slide:this.state.slide+1})
+    if(this.state.slide>= 4){
+      this.setState({slide:0})
+        }
   }
 
-  toNextSlide=()=>{
+  toPrevSlide=()=>{
     this.setState({slide:this.state.slide-1})
+    if(this.state.slide<= 0){
+      this.setState({slide:4})
+        }
   }
 
   onMouseOver=(id)=>()=>{
@@ -56,9 +62,11 @@ class Carousel extends Component {
   render() {
     const {slides} = this.state
     return (
-    <section className="" style={{width:'100%'}}>
-      <div className="slider-wrap"> 
-          
+    <section className="my-5" style={{width:'100%'}}>
+      <div className="slider_wrap"> 
+      
+          <button className="slider_btn btn_left" onClick={this.toPrevSlide}><FaAngleLeft /></button>
+          <button className="slider_btn btn_right" onClick={this.toNextSlide}><FaAngleRight /></button>         
           {
             slides.map(s=>(<div key={s.id} className="slide_content" style={{backgroundImage: `url(${s.imgURL})`,transform:`translateX(${this.state.slide*this.state.width*-1}px)`}}></div>))
           }

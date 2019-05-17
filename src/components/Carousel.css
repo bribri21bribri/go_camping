@@ -1,4 +1,4 @@
-.slider-wrap {
+.slider_wrap {
  width: 100%;
  overflow: hidden;
  height: 350px;
@@ -36,4 +36,27 @@
 .slider_dot li:hover {
  background-color: rgba(255, 255, 255, 0.9);
 }
+
+.slider_btn {
+ position: absolute;
+ background: transparent;
+ z-index: 10;
+ top: 50%;
+ transform: translateY(-50%);
+ border: none;
+ cursor: pointer;
+ height: 100%;
+ font-size: 32px;
+ color: #fff;
+ transition: 0.5s;
+ padding: 0;
+ margin: 0;
+}
+.slider_btn:hover {
+ background: rgba(255, 255, 255, 0.6);
+}
+.btn_right {
+ right: 0;
+}
+
 /*# sourceMappingURL=style.css.map */
