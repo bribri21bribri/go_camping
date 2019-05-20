@@ -1,15 +1,17 @@
 * {
-  box-sizing: border-box; }
+  box-sizing: border-box;
+}
 
-.section_item {
-  height: 250px;
-  background: url("./assets/img/adam-griffith-188558-unsplash.jpg") no-repeat center;
-  background-size: cover;
-  padding: auto;
-  color: #fff;
-  font-size: 50px;
-  font-weight: bold;
-  text-align: center;
-  line-height: 250px; }
+/* .section_item {
+ height: 250px;
+
+ background-size: cover;
+ padding: auto;
+ color: #fff;
+ font-size: 50px;
+ font-weight: bold;
+ text-align: center;
+ line-height: 250px;
+} */
 
 /*# sourceMappingURL=marketing.css.map */

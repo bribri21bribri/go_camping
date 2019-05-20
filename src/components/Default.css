@@ -1,0 +1,160 @@
+/* index.html記得要掛上  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC:300,400,500,700&display=swap&subset=chinese-traditional" rel="stylesh記得要掛上 */
+body {
+  font-family: Noto Sans TC;
+  color: #707070;
+}
+
+/* 字體大小、粗體 */
+.fs-14 {
+  font-size: 14px;
+}
+.fs-18 {
+  font-size: 18px;
+}
+
+.fs-20 {
+  font-size: 1.25rem;
+}
+
+.fs-24 {
+  font-size: 1.5rem;
+}
+
+.fs-32 {
+  font-size: 2rem;
+}
+
+.fw-bold {
+  font-weight: 700;
+}
+
+.fw-medium {
+  font-weight: 500;
+}
+
+.fw-light {
+  font-weight: 400;
+}
+
+/* 文字顏色 */
+.grass {
+  color: #87b061;
+}
+.apple {
+  color: #bfdd87;
+}
+.sunshine {
+  color: #f2ce63;
+}
+.forest {
+  color: #027252;
+}
+.ground {
+  color: #87b061;
+}
+.wood {
+  color: #693d31;
+}
+.watermelon {
+  color: #f26666;
+}
+/* 背景顏色 */
+.bg-grass {
+  background-color: #87b061;
+}
+.bg-apple {
+  background-color: #bfdd87;
+}
+.bg-sunshine {
+  background-color: #f2ce63;
+}
+.bg-forest {
+  background-color: #027252;
+}
+.bg-ground {
+  background-color: #ba7438;
+}
+.bg-wood {
+  background-color: #693d31;
+}
+.bg-watermelon {
+  background-color: #f26666;
+}
+.bg-diamond {
+  background-color: #74b4fc;
+}
+/* 按鈕顏色(整顆上色版) */
+.btn-grass {
+  background-color: #87b061;
+  border: 1px solid transparent;
+  color: #ffffff;
+}
+.btn-grass:hover {
+  background-color: #027252;
+  border: 1px solid transparent;
+  color: #ffffff;
+}
+/* 按鈕顏色(邊框上色版) */
+.btn-outline-grass {
+  background-color: #ffffff;
+  border: 1px solid #87b061;
+  color: #87b061;
+}
+.btn-outline-grass:hover {
+  background-color: #87b061;
+  border: 1px solid #87b061;
+  color: #ffffff;
+}
+
+/* 麵包屑 */
+.myBreadcrumb {
+  font-weight: 500;
+  padding: 1rem 0;
+}
+
+/* 橫排頁籤 */
+.nav-tabs {
+  border-bottom: 1px solid #87b061;
+  /* color: ; */
+}
+
+.nav-tabs .nav-link:hover,
+.nav-tabs .nav-link:focus {
+  border-color: #e9ecef #e9ecef #87b061;
+}
+
+.nav-tabs .nav-item .nav-link {
+  color: #707070;
+}
+
+.nav-tabs .nav-item .nav-link:hover {
+  color: #87b061;
+}
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+  border-color: #87b061 #87b061 #fff;
+  color: #87b061;
+}
+
+/* 副標題與小線線 */
+.subtitle {
+  font-size: 2rem;
+  font-weight: bold;
+  position: relative;
+  text-align: right;
+  float: right;
+  clear: right;
+  padding-bottom: 0.2rem;
+}
+
+.subtitle:after {
+  content: '';
+  position: absolute;
+  border-top: 4px solid #f2ce63;
+  left: 50%;
+  bottom: 0;
+  margin-left: -50%;
+  width: 60%;
+  margin-top: 4px;
+}

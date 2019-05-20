@@ -63,6 +63,7 @@ class Carousel extends Component {
     const {slides} = this.state
     return (
     <section className="my-5" style={{width:'100%'}}>
+      
       <div className="slider_wrap"> 
       
           <button className="slider_btn btn_left" onClick={this.toPrevSlide}><FaAngleLeft /></button>
