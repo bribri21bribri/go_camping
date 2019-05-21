@@ -1,0 +1,39 @@
+/* .camp_card {
+  padding: 0 !important;
+} */
+.campsite_img_wrap {
+  width: 100%;
+  min-height: auto;
+}
+.img_main {
+  width: 60%;
+  border-right: 1px solid transparent;
+}
+.img_main img,
+.img_sec img {
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+  height: 100%;
+}
+.img_sec_wrap {
+  width: 40%;
+}
+.img_sec {
+  width: 100%;
+  height: 50%;
+}
+.img_sec:nth-child(2) {
+  border-top: 1px solid transparent;
+}
+.campsite_info {
+  border: 1px solid #ccc;
+}
+.campsite_info_main {
+  margin-right: auto;
+  padding: 1rem;
+}
+.campsite_info_price {
+  align-self: flex-end;
+  padding: 1rem;
+}

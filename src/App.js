@@ -30,10 +30,10 @@ function App(){
           <Route path="/Food" component={Food} />
           <Route path="/ShareFun" component={ShareFun} />
           <Route path="/Member" component={Member} />
-          <Route path="/Marketing/PromoUserList" component={PromoUserList}/>
-            <Route path="/Marketing/PromoCamptypeList" component={PromoCamptypeList}/>
-            <Route path="/Marketing/PromoPriceList" component={PromoPriceList}/>
-            <Route path="/Marketing/CouponList" component={CouponList}/>
+          <Route path="/PromoUserList" component={PromoUserList}/>
+          <Route path="/PromoCamptypeList" component={PromoCamptypeList}/>
+          <Route path="/PromoPriceList" component={PromoPriceList}/>
+          <Route path="/CouponList" component={CouponList}/>
         </Switch>
 
         <Footer />
