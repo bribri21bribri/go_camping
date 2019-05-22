@@ -14,7 +14,7 @@ import PromoUserList from './pages/marketing/PromoUserList'
 import PromoCamptypeList from './pages/marketing/PromoUserList'
 import PromoPriceList from './pages/marketing/PromoUserList'
 import './App.css';
-
+import './components/Default.css'
 
 function App(){
   return(

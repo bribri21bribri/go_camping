@@ -7,6 +7,7 @@ class Pagination extends Component {
       firstFiveArray: [1],
       lastNumber: '',
       showEllipis: true,
+      totalPages:props.totalPages
     }
   }
   componentDidMount(){
@@ -92,6 +93,9 @@ class Pagination extends Component {
   };
 
   render() {
+    console.log('props:',this.props)
+    console.log('state:',this.state)
+
     return (
       <nav>
         <ul className="pagination">

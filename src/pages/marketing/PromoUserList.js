@@ -1,7 +1,85 @@
 import React, { Component } from 'react'
+import { BrowserRouter as Router, Route, Switch,Link } from 'react-router-dom'
 import Pagination from '../../components/Pagination'
+import PromoCampCard from '../../components/PromoCampCard'
 
+import './PromoList.css'
 class PromoUserList extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      campsites: [],
+      loading: false,
+      currentPage:1,
+      totalPages:0,
+      promo:[]
+    }
+  }
+
+  async componentDidMount() {
+    try {
+      await this.setState({ loading: true })
+
+      const campsitesResponse = await fetch('http://localhost:3001/getPromoUserCamp/'+this.state.currentPage, {
+        method: 'GET',
+        headers: new Headers({
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        }),
+      })
+      const totalResponse = await fetch('http://localhost:3001/getPromoUserCampCount',{
+        method: 'GET',
+        headers: new Headers({
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        }),
+      })
+
+      const promoResponse = await fetch('http://localhost:3001/getPromoUser',{
+        method: 'GET',
+        headers: new Headers({
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        }),
+      })
+
+      //await setTimeout(() => this.setState({ loading: false }), 5 * 1000)
+
+      if (!campsitesResponse.ok) throw new Error(campsitesResponse.statusText)
+      if (!totalResponse.ok) throw new Error(totalResponse.statusText)
+      if (!promoResponse.ok) throw new Error(promoResponse.statusText)  
+      
+      const campsitesJsonObject = await campsitesResponse.json()
+      const totalJsonObject = await totalResponse.json()
+      const promoJsonObject = await promoResponse.json()
+      let totalPages = Math.ceil(totalJsonObject.total/6)
+      
+
+      await this.setState({ campsites: campsitesJsonObject,totalPages:totalPages,promo: promoJsonObject })
+      // console.log(this.state.coupons[0].coupon_name)
+      this.setState({ loading: false })
+    } catch (e) {
+    } finally {
+    }
+
+  }
+  
+  trans_requirement=requirement=>{
+    switch(requirement){
+      case 1:
+        return '露營新手'
+        break
+      case 2:
+        return '業餘露營家'
+        break
+      case 3:
+        return '露營達人'
+    }
+  }
+
+  
+
+
   render() {
     return (
       <>
@@ -30,46 +108,67 @@ class PromoUserList extends Component {
             </div>
           </div>
 
+          
+
           <div className="row" id="promo_item_list">
             <div className="col-md-3">
-              <h5>搶優惠</h5>
+              <h5 className="fs-24 forest mb-3">搶優惠</h5>
               <div>
-                <ul>
-                  <li>
-                    <h6>優惠專區</h6>
-                  </li>
-                  <li>user</li>
-                  <li>camptype</li>
-                  <li>price</li>
+              <h6 className="fs-20 grass mb-2">優惠專區</h6>
+                <ul className="mb-2">
+                  
+                  <li className="side_menu_link is-actived"><Link className="wood fs-20" to="/PromoUserList">會員優惠</Link></li>
+                  <li className="side_menu_link"><Link className="fs-20" to="/PromoCamptypeList">營地分類優惠</Link></li>
+                  <li className="side_menu_link"><Link className="fs-20" to="/PromoPriceList">滿額折扣</Link></li>
                 </ul>
-                <ul>
-                  <li>
-                    <h6>優惠券</h6>
-                  </li>
-                  <li>優惠券搜尋</li>
+                <h6 className="fs-20 grass mb-2">優惠券</h6>
+                <ul className="mb-2">
+                  
+                  <li className="side_menu_link"><Link className="fs-20" to="/CouponList">優惠券搜尋</Link></li>
                 </ul>
               </div>
             </div>
             <div className="col-md-9">
-              <h4 className="grass fs-32">優惠券</h4>
-              <section id="discription_block" class="mb-4">
-                <h4>優惠專區</h4>
+              <h4 className="grass fs-32">會員優惠</h4>
+              <div className="mb-4 discription_block">
+                
                 <div>
-                <div className="promo_discription_img"></div>
+                <div className="promo_discription_img" style={{backgroundImage: "url(" + 'assets/img/campsite3.jpg' + ")"}}><h4>會員優惠</h4></div>
                 <div className="promo_discription_content">
                   <div>
-                  <p><sapn>time: </sapn>time</p>
-                  <p><sapn>time: </sapn>time</p>
-                  <p><sapn>time: </sapn></p>
-                  <ul>
-                    <li>level1</li>
-                    <li>level2</li>
-                    <li>level3</li>
-                  </ul>
+                    <ul>
+                      <li></li>
+                      <li></li>
+                      <li>
+                        <ul>
+                        {this.state.promo.map(p => {
+                          return this.state.loading ? (
+                            <></>
+                          ) : (
+                            <li>{this.trans_requirement(p.requirement)}:{p.discription}</li>
+                          )
+                        })}
+                          
+                        </ul>
+                      </li>
+                    </ul>
                   </div>
                 </div>
                 </div>
-              </section>
+              </div>
+
+              <div className="promo_camsite_list">
+                <div className="row d-flex">
+                {this.state.campsites.map(campsite => {
+                return this.state.loading ? (
+                  <></>
+                ) : (
+                  <PromoCampCard campsite_data={campsite} />
+                )
+              })}
+                </div>
+
+              </div>
               
 
               {/* <Pagination changeCurrentPage={this.changeCurrentPage} totalPages={8} currentPage={this.state.currentPage}/> */}

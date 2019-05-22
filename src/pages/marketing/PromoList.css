@@ -1,0 +1,36 @@
+.discription_block {
+  border: 1px solid #ccc;
+  /* position: relative; */
+}
+.discription_block h4 {
+  text-align: center;
+  color: #fff;
+}
+
+.promo_discription_img {
+  min-height: 200px;
+  width: 100%;
+  background: no-repeat center;
+  background-size: cover;
+}
+.camp_card:nth-child(2n) {
+  padding-left: 0.25rem;
+}
+.camp_card:nth-child(2n + 1) {
+  padding-right: 0.25rem;
+}
+@media (max-width: 768px) {
+  .camp_card:nth-child(2n) {
+    padding-left: 0;
+  }
+  .camp_card:nth-child(2n + 1) {
+    padding-right: 0;
+  }
+}
+.is-actived {
+  background: #f2ce63;
+  color: #693d31;
+}
+.side_menu_link {
+  padding: 0.25rem 0.25rem 0.25rem 1rem;
+}

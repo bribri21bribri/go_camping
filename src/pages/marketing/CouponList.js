@@ -1,7 +1,11 @@
 import React from 'react'
+import { BrowserRouter as Router, Route, Switch,Link } from 'react-router-dom'
+
 import Pagination from '../../components/Pagination'
+import CouponSearchbar from '../../components/CouponSearchbar'
 import '../../components/marketing.css'
 import '../../components/Default.css'
+import './PromoList.css'
 import Coupon from '../../components/Coupon'
 
 
@@ -11,7 +15,7 @@ class CouponList extends React.Component {
     this.state = {
       coupons: [],
       loading: false,
-      currentPage:6,
+      currentPage:1,
       totalPages:0,
     }
   }
@@ -82,12 +86,33 @@ class CouponList extends React.Component {
     } 
   };
 
+  onSubmit= async (keyword)=>{
+    
+    keyword = keyword?keyword:''
+    const searchResponse = await fetch('http://localhost:3001/searchcoupon/'+keyword+'/'+this.state.currentPage, {
+        method: 'GET',
+        headers: new Headers({
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        }),
+      })
+     
+      if (!searchResponse.ok) throw new Error(searchResponse.statusText)
+      
+      const searchResponseJsonObject = await searchResponse.json()
+      let coupons = searchResponseJsonObject.coupons
+      let totalPages =searchResponseJsonObject.totalCount/10
+      await this.setState({ coupons:coupons ,totalPages:totalPages })
+  }
+
   render() {
     return (
       <>
         <div className="container">
           <div className="row">
-            <div className="col-md-3" />
+            <div className="col-md-3" >
+              <CouponSearchbar onSubmit={this.onSubmit}/>
+            </div>
             <div className="col-md-9">
               <nav className="bread_crumb mt-1 mb-3">
                 <ul className="d-flex">
@@ -111,22 +136,20 @@ class CouponList extends React.Component {
           </div>
 
           <div className="row" id="promo_item_list">
-            <div className="col-md-3">
-              <h5>搶優惠</h5>
+          <div className="col-md-3">
+              <h5 className="fs-24 forest mb-3">搶優惠</h5>
               <div>
-                <ul>
-                  <li>
-                    <h6>優惠專區</h6>
-                  </li>
-                  <li>user</li>
-                  <li>camptype</li>
-                  <li>price</li>
+              <h6 className="fs-20 grass mb-2">優惠專區</h6>
+                <ul className="mb-2">
+                  
+                  <li className="side_menu_link "><Link className="wood fs-20" to="/PromoUserList">會員優惠</Link></li>
+                  <li className="side_menu_link "><Link className="fs-20" to="/PromoCamptypeList">營地分類優惠</Link></li>
+                  <li className="side_menu_link"><Link className="fs-20" to="/PromoPriceList">滿額折扣</Link></li>
                 </ul>
-                <ul>
-                  <li>
-                    <h6>優惠券</h6>
-                  </li>
-                  <li>優惠券搜尋</li>
+                <h6 className="fs-20 grass mb-2">優惠券</h6>
+                <ul className="mb-2">
+                  
+                  <li className="side_menu_link is-actived"><Link className="fs-20 wood" to="/CouponList">優惠券搜尋</Link></li>
                 </ul>
               </div>
             </div>
@@ -140,7 +163,7 @@ class CouponList extends React.Component {
                 )
               })}
 
-              <Pagination changeCurrentPage={this.changeCurrentPage} totalPages={8} currentPage={this.state.currentPage}/>
+              <Pagination changeCurrentPage={this.changeCurrentPage} totalPages={this.state.totalPages} currentPage={this.state.currentPage}/>
             </div>
           </div>
         </div>

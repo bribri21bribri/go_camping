@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAQA,CAAE;EACD,UAAU,EAAE,UAAU;;AAGvB,aAAc;EACb,MAAM,EAAE,KAAK;EACb,UAAU,EAAE,sEACL;EACP,eAAe,EAAE,KAAK;EACtB,OAAO,EAAE,IAAI;EAEb,KAAK,EAAE,IAAI;EACX,SAAS,EAAE,IAAI;EACf,WAAW,EAAE,IAAI;EACjB,UAAU,EAAE,MAAM;EAGlB,WAAW,EAAE,KAAK",
-"sources": ["marketing.scss"],
-"names": [],
-"file": "marketing.css"
-}

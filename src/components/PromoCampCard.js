@@ -2,36 +2,41 @@ import React, { Component } from 'react'
 import './PromoCampCard.css'
 
  class PromoCampCard extends Component {
+   constructor(props){
+     super(props)
+     this.state={
+
+     }
+   }
   render() {
     
     return (
-      <div className="container">
-        <div className="row">
-          <div className="col-md-9">
-            <div className="row" >
+      
+            
 
-              <div className="col-md-6 camp_card" >
+              <div className=" camp_card mb-2" >
                 <div className='campsite_img_wrap d-flex'>
+                  <a href="" className="like_btn"><i class="fas fa-heart"></i></a>
                   <div className="img_main">
-                    <img src="assets/img/campsite1.jpg" alt=""/>
+                    <img src={this.props.campsite_data?'assets/img/'+this.props.campsite_data.camp_img:''} alt=""/>
                   </div>
                   <div className="img_sec_wrap">
                     <div className="img_sec">
-                      <img src="assets/img/campsite1.jpg" alt=""/>
+                      <img src={this.props.campsite_data?'assets/img/'+this.props.campsite_data.camp_img:''} alt=""/>
                     </div>
                     <div className="img_sec">
-                      <img src="assets/img/campsite1.jpg" alt=""/>
+                      <img src={this.props.campsite_data?'assets/img/'+this.props.campsite_data.camp_img:''} alt=""/>
                     </div>
                   </div>
                 </div>
                 <div className='campsite_info d-flex'>
                   <div className="campsite_info_main">
                     <ul>
-                      <li>locatiion</li>
-                      <li>campname</li>
-                      <li>star</li>
-                      <li>hashtag</li>
-                      <li>campass</li>
+                      <li><i class="fas fa-map-marker-alt"></i>{this.props.campsite_data?this.props.campsite_data.city:''},{this.props.campsite_data?this.props.campsite_data.dist:''}</li>
+                      <li>{this.props.campsite_data?this.props.campsite_data.camp_name:''}</li>
+                      <li><i class="fas fa-star"></i></li>
+                      <li><i class="fas fa-hashtag"></i></li>
+                      <li><i class="far fa-compass"></i></li>
                     </ul>
                   </div>
                   <div className='campsite_info_price'>
@@ -47,13 +52,9 @@ import './PromoCampCard.css'
                 </div>
               </div>
 
-              <div className="col-md-6" style={{border:'1px solid red'}}>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+              
+            
+          
     )
   }
 }

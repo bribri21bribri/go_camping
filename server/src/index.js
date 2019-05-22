@@ -93,6 +93,53 @@ app.get('/getCouponsLimit/:limit', (req, res) => {
   });
 });
 
+
+app.get('/getPromoUserCampCount',(req,res)=>{
+  let sql = 'SELECT * FROM promo_apply as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id  WHERE promo_type = "promo_user"'
+  let query = db.query(sql, (err, coupons) => {
+    if(err) throw err;
+    let total = coupons.length
+    console.log(total)
+    res.send({total:total})
+});
+})
+
+app.get('/getPromoUserCamp/:page', (req, res) => {
+  let results = {}
+  let start = (req.params.page-1)*6
+  let perPage = 6
+  let sql = 'SELECT * FROM promo_apply as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id LEFT OUTER JOIN campsite_feature as q on o.camp_id = q.camp_id WHERE promo_type = "promo_user" LIMIT '+start+','+perPage;
+  let query = db.query(sql, (err, campsites) => {
+      if(err) throw err;
+      console.log(campsites)
+      res.json(campsites)
+  });
+});
+
+app.get('/getPromoUser', (req, res) => {
+  let sql = 'SELECT * FROM promo_user'
+  let query = db.query(sql, (err, PromoUser) => {
+      if(err) throw err;
+      console.log(PromoUser)
+      res.json(PromoUser)
+  });
+});
+
+app.get('/searchcoupon/:keyword/:page', (req, res) => {
+  console.log(req.params)
+  let results={coupons:[],totalCount:0}
+  let start = (req.params.page-1)*10
+  let perPage = 10
+  let sql = "SELECT * FROM coupon_genre as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id WHERE coupon_name LIKE '%"+req.params.keyword+"%' OR camp_name LIKE '%"+req.params.keyword+"%' LIMIT "+start+" , "+perPage;
+  let query = db.query(sql, (err, coupons) => {
+      if(err) throw err;
+      
+      results.coupons=coupons
+      results.totalCount = coupons.length
+      res.json(results)
+  });
+});
+
 app.listen(3001, () => {
   console.log("server running");
 });
