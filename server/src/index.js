@@ -50,38 +50,24 @@ app.use(session({
 }));
 
 //Routers
+
+
+app.use('/users',require('./routes/users'))
+// app.use('/marketing',require('./routes/marketing'))
+
+
 app.get("/", (req, res) => {
   res.json({
     success: true
   });
 });
-//login
-app.get('/login',(req,res)=>{
-  console.log(req.body)
-})
 
 
 
-app.get('/getCouponCount',(req,res)=>{
-  let sql = 'SELECT * FROM coupon_genre as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id  '
-  let query = db.query(sql, (err, coupons) => {
-    if(err) throw err;
-    let total = coupons.length
-    // console.log(total)
-    res.send({total:total})
-});
-})
 
-app.get('/getCouponsPage/:page', (req, res) => {
-  let results = {}
-  let start = (req.params.page-1)*10
-  let perPage = 10
-  let sql = 'SELECT * FROM coupon_genre as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id LIMIT '+start+','+perPage;
-  let query = db.query(sql, (err, coupons) => {
-      if(err) throw err;
-      res.json(coupons)
-  });
-});
+
+
+
 
 app.get('/getCouponsLimit/:limit', (req, res) => {
   // console.log(req.params)
@@ -125,17 +111,38 @@ app.get('/getPromoUser', (req, res) => {
   });
 });
 
-app.get('/searchcoupon/:keyword/:page', (req, res) => {
+
+app.get('/getcoupons/:page/:keyword?', (req, res) => {
   console.log(req.params)
-  let results={coupons:[],totalCount:0}
+  let results={coupons:[]}
   let start = (req.params.page-1)*10
   let perPage = 10
-  let sql = "SELECT * FROM coupon_genre as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id WHERE coupon_name LIKE '%"+req.params.keyword+"%' OR camp_name LIKE '%"+req.params.keyword+"%' LIMIT "+start+" , "+perPage;
+  let sql = "SELECT * FROM coupon_genre as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id  LIMIT "+start+" , "+perPage;
+  sql = req.params.keyword? "SELECT * FROM coupon_genre as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id "+"WHERE coupon_name LIKE '%"+req.params.keyword+"%' OR camp_name LIKE '%"+req.params.keyword+"%'"+" LIMIT "+start+" , "+perPage:"SELECT * FROM coupon_genre as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id  LIMIT "+start+" , "+perPage;
+
+  
+  
   let query = db.query(sql, (err, coupons) => {
       if(err) throw err;
       
       results.coupons=coupons
-      results.totalCount = coupons.length
+      console.log(coupons)
+      res.json(results)
+  });
+});
+
+app.get('/getcouponscount/:keyword?', (req, res) => {
+  // console.log(req.params)
+  let results={totalCount:0}
+  let sql = "SELECT * FROM coupon_genre as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id";
+  sql = req.params.keyword? "SELECT * FROM coupon_genre as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id "+"WHERE coupon_name LIKE '%"+req.params.keyword+"%' OR camp_name LIKE '%"+req.params.keyword+"%'":"SELECT * FROM coupon_genre as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id  ";
+
+  
+  
+  let query = db.query(sql, (err, totalCount) => {
+      if(err) throw err;
+      
+      results.totalCount=totalCount.length
       res.json(results)
   });
 });

@@ -4,15 +4,10 @@ import './CouponSearchbar.css'
  class CouponSearchbar extends Component {
   constructor(props){
     super(props)
-    this.state={
-      keyword:''
-    }
+    
     
   }
-  onChange=(e)=>{
-    let keyword = e.target.value
-    this.setState({keyword:keyword})
-  }
+  
 
   
 
@@ -22,11 +17,11 @@ import './CouponSearchbar.css'
       <form onSubmit={(e)=>{
         console.log(e)
         e.preventDefault()
-        return this.props.onSubmit(this.state.keyword)
+        return this.props.onSubmit(this.props.keyword)
         }}>
         <div className="d-flex">
           <div>
-            <input onChange={this.onChange} type="text"/>
+            <input onChange={this.props.onChange} type="text"/>
           </div>
           <div>
             <button className="search_btn" type="submit"><i className="fas fa-search"></i></button>

@@ -14,6 +14,8 @@ class CouponList extends React.Component {
     super(props)
     this.state = {
       coupons: [],
+      coupon_records:[],
+      keyword:'',
       loading: false,
       currentPage:1,
       totalPages:0,
@@ -23,35 +25,48 @@ class CouponList extends React.Component {
   async componentDidMount() {
     try {
       await this.setState({ loading: true })
+      let currentPage = this.state.currentPage
+      let keyword = this.state.keyword
+      let url = 'http://localhost:3001/getcoupons/'+currentPage
+      url = keyword?'http://localhost:3001/getcoupons/'+currentPage+keyword:'http://localhost:3001/getcoupons/'+currentPage
 
-      const CouponsResponse = await fetch('http://localhost:3001/getCouponsPage/'+this.state.currentPage, {
+      let url_count = 'http://localhost:3001/getcouponscount/'
+      url_count = keyword?'http://localhost:3001/getcouponscount/'+keyword:'http://localhost:3001/getcouponscount/'
+
+      const response = await fetch(url, {
         method: 'GET',
         headers: new Headers({
           Accept: 'application/json',
           'Content-Type': 'application/json',
         }),
       })
-      const totalResponse = await fetch('http://localhost:3001/getCouponCount',{
+      // console.log(response)
+
+      const response_count = await fetch(url_count, {
         method: 'GET',
         headers: new Headers({
           Accept: 'application/json',
           'Content-Type': 'application/json',
         }),
       })
+      
+      
+      if (!response.ok) throw new Error(response.statusText)
+      if (!response_count.ok) throw new Error(response_count.statusText)
 
-      //await setTimeout(() => this.setState({ loading: false }), 5 * 1000)
-
-      if (!CouponsResponse.ok) throw new Error(CouponsResponse.statusText)
-      if (!totalResponse.ok) throw new Error(totalResponse.statusText)
+     
 
       
-      const couponsJsonObject = await CouponsResponse.json()
-      const totalJsonObject = await totalResponse.json()
-      let totalPages = Math.ceil(totalJsonObject.total/10)
+      const responseJsonObject = await response.json()
       
+      const response_count_JsonObject = await response_count.json()
 
-      await this.setState({ coupons: couponsJsonObject,totalPages:totalPages })
-      // console.log(this.state.coupons[0].coupon_name)
+     
+      let coupons = responseJsonObject.coupons
+      let totalPages = Math.ceil(response_count_JsonObject.totalCount/10)
+      // console.log(responseJsonObject)
+      await this.setState({ coupons: coupons,totalPages:totalPages })
+     
       this.setState({ loading: false })
     } catch (e) {
     } finally {
@@ -59,59 +74,123 @@ class CouponList extends React.Component {
 
   }
 
-    changeCurrentPage = async (numPage) => {
-    this.setState({ currentPage: numPage });
-    try {
-      await this.setState({ loading: true })
+    changeCurrentPage = async (currentPage) => {
+      try {
+        await this.setState({ loading: true,currentPage:currentPage })
+        let keyword = this.state.keyword
+        let url = 'http://localhost:3001/getcoupons/'+currentPage
+        url = keyword?'http://localhost:3001/getcoupons/'+currentPage+'/'+keyword:'http://localhost:3001/getcoupons/'+currentPage
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: new Headers({
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          }),
+        })
+        
+  
+        if (!response.ok) throw new Error(response.statusText)
+        
+  
+        
+        const responseJsonObject = await response.json()
+       
+        let coupons = responseJsonObject.coupons
+        
+  
+        await this.setState({ coupons: coupons })
+        
+        this.setState({ loading: false })
+      } catch (e) {
+      } finally {
+      }
+    // this.setState({ currentPage: numPage });
+    // try {
+    //   await this.setState({ loading: true })
 
-      const CouponsResponse = await fetch('http://localhost:3001/getCouponsPage/'+this.state.currentPage, {
-        method: 'GET',
-        headers: new Headers({
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        }),
-      })
+    //   const CouponsResponse = await fetch('http://localhost:3001/getCouponsPage/'+this.state.currentPage, {
+    //     method: 'GET',
+    //     headers: new Headers({
+    //       Accept: 'application/json',
+    //       'Content-Type': 'application/json',
+    //     }),
+    //   })
     
 
-      if (!CouponsResponse.ok) throw new Error(CouponsResponse.statusText)
+    //   if (!CouponsResponse.ok) throw new Error(CouponsResponse.statusText)
 
       
-      const couponsJsonObject = await CouponsResponse.json()
+    //   const couponsJsonObject = await CouponsResponse.json()
       
 
-      await this.setState({ coupons: couponsJsonObject})
-      // console.log(this.state.coupons[0].coupon_name)
-      this.setState({ loading: false })
-    } catch (e) {
-    } 
+    //   await this.setState({ coupons: couponsJsonObject})
+    //   // console.log(this.state.coupons[0].coupon_name)
+    //   this.setState({ loading: false })
+    // } catch (e) {
+    // } 
   };
 
   onSubmit= async (keyword)=>{
-    
-    keyword = keyword?keyword:''
-    const searchResponse = await fetch('http://localhost:3001/searchcoupon/'+keyword+'/'+this.state.currentPage, {
+    try {
+      await this.setState({ loading: true })
+      let currentPage = 1
+      // let keyword = this.state.keyword
+      let url = 'http://localhost:3001/getcoupons/'+currentPage
+      url = keyword?'http://localhost:3001/getcoupons/'+currentPage+'/'+keyword:'http://localhost:3001/getcoupons/'+currentPage
+
+      let url_count = 'http://localhost:3001/getcouponscount/'
+      url_count = keyword?'http://localhost:3001/getcouponscount/'+keyword:'http://localhost:3001/getcouponscount/'
+
+      const response = await fetch(url, {
         method: 'GET',
         headers: new Headers({
           Accept: 'application/json',
           'Content-Type': 'application/json',
         }),
       })
-     
-      if (!searchResponse.ok) throw new Error(searchResponse.statusText)
+      const response_count = await fetch(url_count, {
+        method: 'GET',
+        headers: new Headers({
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        }),
+      })
       
-      const searchResponseJsonObject = await searchResponse.json()
-      let coupons = searchResponseJsonObject.coupons
-      let totalPages =searchResponseJsonObject.totalCount/10
-      await this.setState({ coupons:coupons ,totalPages:totalPages })
+
+      if (!response.ok) throw new Error(response.statusText)
+      if (!response_count.ok) throw new Error(response_count.statusText)
+      
+
+      
+      const responseJsonObject = await response.json()
+      const response_count_JsonObject = await response_count.json()
+
+     
+      let coupons = responseJsonObject.coupons
+      let totalPages = Math.ceil(response_count_JsonObject.totalCount/10)
+
+      await this.setState({ coupons: coupons,totalPages:totalPages })
+      
+      this.setState({ loading: false })
+    } catch (e) {
+    } finally {
+    }
+    
+  }
+
+  onChange=(e)=>{
+    let keyword = e.target.value
+    this.setState({keyword:keyword})
   }
 
   render() {
+    // console.log(this.state)
     return (
       <>
         <div className="container">
           <div className="row">
             <div className="col-md-3" >
-              <CouponSearchbar onSubmit={this.onSubmit}/>
+              <CouponSearchbar onSubmit={this.onSubmit} onChange={this.onChange} keyword={this.state.keyword}/>
             </div>
             <div className="col-md-9">
               <nav className="bread_crumb mt-1 mb-3">

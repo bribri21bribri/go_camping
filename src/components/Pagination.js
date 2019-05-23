@@ -7,7 +7,7 @@ class Pagination extends Component {
       firstFiveArray: [1],
       lastNumber: '',
       showEllipis: true,
-      totalPages:props.totalPages
+      totalPages:0
     }
   }
   componentDidMount(){
@@ -39,6 +39,16 @@ class Pagination extends Component {
       this.setState({lastNumber:this.props.totalPages})
     }
   }
+
+  componentWillReceiveProps(prevProps, prevState) {
+    if(prevProps.currentPage!==this.props.currentPage){
+
+      this.setState({currentPage: this.props.currentPage});
+      
+    }
+  }
+
+
 
   prev = () => {
     if (this.props.currentPage > 1) {
@@ -82,7 +92,7 @@ class Pagination extends Component {
         </li>
         // <a
         //   className={this.isactive(this.props.totalPages) ? "is-active" : ""}
-        //   onClick={() => {
+        //   onClick={() => { 
         //     this.changeCurrentPage(this.props.totalPages);
         //   }}
         // >
@@ -93,8 +103,8 @@ class Pagination extends Component {
   };
 
   render() {
-    console.log('props:',this.props)
-    console.log('state:',this.state)
+    // console.log('props:',this.props)
+    // console.log('state:',this.state)
 
     return (
       <nav>
