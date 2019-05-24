@@ -11,8 +11,8 @@ import ShareFun from './pages/sharefun/ShareFun';
 import Member from './pages/member/Member';
 import CouponList from './pages/marketing/CouponList'
 import PromoUserList from './pages/marketing/PromoUserList'
-import PromoCamptypeList from './pages/marketing/PromoUserList'
-import PromoPriceList from './pages/marketing/PromoUserList'
+import PromoCamptypeList from './pages/marketing/PromoCamptypeList'
+import PromoPriceList from './pages/marketing/PromoPriceList'
 import './App.css';
 import './components/Default.css'
 

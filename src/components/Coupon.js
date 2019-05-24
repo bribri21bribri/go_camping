@@ -17,14 +17,20 @@ class Coupon extends Component {
   //     this.setState({})
   //   }
   // }
-  onClick= async()=>{
-    const CouponsResponse = await fetch('http://localhost:3001/users/obtaincoupon', {
-        method: 'GET',
+  onClick= async(coupon_data)=>{
+    console.log(coupon_data)
+    const response = await fetch('http://localhost:3001/obtaincoupon', {
+        method: 'POST',
+        credentials: 'include',
         headers: new Headers({
           Accept: 'application/json',
           'Content-Type': 'application/json',
         }),
       })
+
+      if (!response.ok) throw new Error(response.statusText)
+
+      const responseJsonObject = await response.json()
   }
 
   render() {
@@ -74,9 +80,20 @@ class Coupon extends Component {
                 </ul>
               </div>
               <div className="coupon_info_sec">
-                <span className="discount">85折</span>
-                <button onClick={this.onClick} className="get_coupon_btn forest fs-20 fw-bold">
-                  我要領取
+                <span className={this.props.disabled?"discount_disabled":"discount"}>
+                {
+                  this.props.coupon_data
+                      ? this.props.coupon_data.discount_unit
+                      : ''
+                      }
+                      {
+                        this.props.coupon_data
+                      ? this.props.coupon_data.discount_type=='percentage'?"折":"元"
+                      : ''
+                      }
+                </span>
+                <button onClick={()=>this.onClick(this.props.coupon_data?this.props.coupon_data:null)} disabled={this.props.disabled} className={this.props.disabled?"get_coupon_btn_disabled":"get_coupon_btn"}>
+                  {this.props.disabled? "已領取":"我要領取"}
                 </button>
               </div>
             </div>

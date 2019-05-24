@@ -4,46 +4,49 @@ class Pagination extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      firstFiveArray: [1],
+      firstFiveArray: [],
+     lastFiveArray: [],
       lastNumber: '',
       showEllipis: true,
       totalPages:0
     }
   }
   componentDidMount(){
-    if(this.props.totalPages <= 7){
-      let fArray = [];
-      for(let i = 1;i<= this.props.totalPages;i++){
-        fArray.push(i)
-      }
-      // console.log(this.props.totalPages)
-
-      this.setState({firstFiveArray:fArray})
-    }else{
-      if(this.props.currentPage< 5){
-        console.log('< 5')
-        this.setState({firstFiveArray:[1,2,3,4,5]})
-      }else{
-        let fArray = []
-        let index = 1
-        for(let j = this.props.currentPage; j>=0;j--){
-          fArray.push(j)
-          if(index ===5){
-            break
-          }
-          index++
-        }
-        fArray.reverse()
-        this.setState({firstFiveArray:fArray})
-      }
-      this.setState({lastNumber:this.props.totalPages})
-    }
+    
   }
 
-  componentWillReceiveProps(prevProps, prevState) {
-    if(prevProps.currentPage!==this.props.currentPage){
-
-      this.setState({currentPage: this.props.currentPage});
+  static getDerivedStateFromProps(props, state) {
+    if(props.totalPages!==state.totalPage){
+      if(props.totalPages <= 7){
+        let fArray = [];
+        for(let i = 1;i<= props.totalPages;i++){
+          fArray.push(i)
+        }
+        
+        return {totalPages:props.totalPages,firstFiveArray:fArray}
+        // this.setState({firstFiveArray:fArray})
+      }else{
+        if(props.currentPage< 5){
+          return {totalPages:props.totalPages,firstFiveArray:[1,2,3,4,5]}
+          // this.setState({firstFiveArray:[1,2,3,4,5]})
+        }else{
+          let fArray = []
+          let index = 1
+          for(let j = props.currentPage+2; j>=0;j--){
+            fArray.push(j)
+            if(index ===5){
+              break
+            }
+            index++
+          }
+          fArray.reverse()
+          // this.setState({firstFiveArray:fArray})
+          return {totalPages:props.totalPages,firstFiveArray:fArray}
+        }
+        // this.setState({lastNumber:this.props.totalPages})
+      }
+      
+      // return {totalPages:props.totalPages}
       
     }
   }

@@ -5,6 +5,8 @@ const cors = require('cors');
 const session = require('express-session');
 
 
+const app = express();
+
 const db = mysql.createConnection({
   host:'localhost',
   user:'bri',
@@ -19,10 +21,14 @@ db.connect((err) => {
   }
   console.log('MySql Connected...');
 });
-
-
-const app = express();
-
+app.use(session({
+  saveUninitialized: false,
+  resave: false,
+  secret: 'secret',
+  cookie: {
+      maxAge: 3*60*60*1000
+  }
+}));
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -40,19 +46,12 @@ const corsOptions = {
     }
 };
 app.use(cors(corsOptions));
-app.use(session({
-  saveUninitialized: false,
-  resave: false,
-  secret: 'sdgdsf ;ldkfg;ld',
-  cookie: {
-      maxAge: 600000
-  }
-}));
+
 
 //Routers
 
 
-app.use('/users',require('./routes/users'))
+// app.use('/users',require('./routes/users'))
 // app.use('/marketing',require('./routes/marketing'))
 
 
@@ -113,7 +112,7 @@ app.get('/getPromoUser', (req, res) => {
 
 
 app.get('/getcoupons/:page/:keyword?', (req, res) => {
-  console.log(req.params)
+  //TODO: 過濾已過期coupon
   let results={coupons:[]}
   let start = (req.params.page-1)*10
   let perPage = 10
@@ -126,13 +125,13 @@ app.get('/getcoupons/:page/:keyword?', (req, res) => {
       if(err) throw err;
       
       results.coupons=coupons
-      console.log(coupons)
+      // console.log(coupons)
       res.json(results)
   });
 });
 
 app.get('/getcouponscount/:keyword?', (req, res) => {
-  // console.log(req.params)
+  //TODO: 過濾已過期coupon
   let results={totalCount:0}
   let sql = "SELECT * FROM coupon_genre as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id";
   sql = req.params.keyword? "SELECT * FROM coupon_genre as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id "+"WHERE coupon_name LIKE '%"+req.params.keyword+"%' OR camp_name LIKE '%"+req.params.keyword+"%'":"SELECT * FROM coupon_genre as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id  ";
@@ -146,6 +145,93 @@ app.get('/getcouponscount/:keyword?', (req, res) => {
       res.json(results)
   });
 });
+//測試用
+app.post('/login',(req,res)=>{
+  const {account} = req.body
+  console.log(account)
+  let sql = 'SELECT * FROM member_list'
+  let query = db.query(sql,(err,members)=>{
+    if(err) throw err
+    const user = members.find(member=>member.mem_account===account)
+    if(user){
+      req.session.regenerate(function(err) {
+        if(err){
+        return res.json({ret_code: 2, ret_msg: '登入失敗'});        
+        }
+        req.session.user  =  user
+        res.json({ret_code: 0, ret_msg: '登入成功',session:req.session});              
+        });
+        }else{
+        res.json({ret_code: 1, ret_msg: '賬號或密碼錯誤'});
+        }  
+        
+  })
+
+})
+//測試用END
+
+app.get('/getcouponrecords', (req, res) => {
+  let results={
+    is_login:false,
+    records:[],
+  }
+  if(req.session.user){
+    let mem_account = req.session.user.mem_account
+    let sql = "SELECT * FROM coupon_gain WHERE mem_account = '"+mem_account+"'"
+    // console.log(sql)
+    let query = db.query(sql, (err, records) => {
+        if(err) throw err;
+        results.records = records
+        results.is_login = true
+        // console.log(results)
+        res.json(results)
+    });
+    // console.log(query)
+    }else{
+      res.json(results)
+    }
+});
+
+app.post('/obtaincoupon',(req,res)=>{
+  let results={
+    is_login:false,
+    records:[],
+  }
+  if(req.session.user){
+    let mem_account = req.session.user.mem_account
+    // let sql = "INSERT INTO `coupon_gain`(`coupon_genre_id`,`mem_account`) VALUES(?,?)"
+
+    let code_length = 6
+    let rand_str = ""
+    let str = "abcdefghijklmnopqrstuvwxyz0123456789"
+    let str_length = str.length
+    for(let i =0; i< code_length;i++){
+      rand_str+=str.charAt(Math.floor(Math.random()*str_length))
+    }
+
+    let check_code = async(rand_str)=>{
+      let records = await db.queryAsync("SELECT * FROM coupon_gain")
+      console.log(records)
+      return 'a'
+    }
+
+    
+    
+  //   let query = db.query("SELECT * FROM coupon_gain", (err, records) => {
+  //     if(err) throw err;
+      
+  //     records.forEach(record => {
+        
+  //     });
+      
+  // });
+    
+    
+    
+    }else{
+      res.json(results)
+    }
+})
 
 app.listen(3001, () => {
   console.log("server running");

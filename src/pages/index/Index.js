@@ -14,8 +14,9 @@ class Index extends React.Component{
  
     onSubmit= async (account)=>{
         account = account?account:''
-        const response = await fetch('http://localhost:3001/users/login', {
+        const response = await fetch('http://localhost:3001/login', {
             method: 'POST',
+            credentials: 'include',
             body: JSON.stringify({account}),
             headers: new Headers({
               Accept: 'application/json',

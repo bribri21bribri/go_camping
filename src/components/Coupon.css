@@ -45,6 +45,11 @@ li {
   font-weight: 700;
   color: #027252;
 }
+.discount_disabled {
+  font-size: 36px;
+  font-weight: 700;
+  color: #ccc;
+}
 .get_coupon_btn {
   padding: 0.5rem 0.75rem;
   background: transparent;
@@ -52,6 +57,22 @@ li {
   cursor: pointer;
   color: #027252;
   transition: 0.5s;
+  font-size: 20px;
+  text-align: center;
+  font-weight: bold;
+  width: 120px;
+}
+.get_coupon_btn_disabled {
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: 1px solid #027252;
+  /* cursor: pointer; */
+  color: #ccc;
+  transition: 0.5s;
+  font-size: 20px;
+  text-align: center;
+  font-weight: bold;
+  width: 120px;
 }
 .get_coupon_btn:hover {
   background: #87b061;
