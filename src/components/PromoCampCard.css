@@ -56,3 +56,18 @@
   height: auto;
   text-align: center;
 }
+.camp_loca {
+  font-size: 1rem;
+  color: #87b061;
+}
+.camp_name {
+  font-size: 1.5rem;
+}
+.price_main {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #f26666;
+}
+.camp_feature {
+  font-size: 1rem;
+}

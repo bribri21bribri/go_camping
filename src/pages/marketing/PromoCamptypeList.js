@@ -116,8 +116,8 @@ class PromoCamptypeList extends Component {
               <h6 className="fs-20 grass mb-2">優惠專區</h6>
                 <ul className="mb-2">
                   
-                  <li className="side_menu_link is-actived"><Link className="wood fs-20" to="/PromoUserList">會員優惠</Link></li>
-                  <li className="side_menu_link"><Link className="fs-20" to="/PromoCamptypeList">營地分類優惠</Link></li>
+                  <li className="side_menu_link "><Link className=" fs-20" to="/PromoUserList">會員優惠</Link></li>
+                  <li className="side_menu_link is-actived"><Link className="wood fs-20" to="/PromoCamptypeList">營地分類優惠</Link></li>
                   <li className="side_menu_link"><Link className="fs-20" to="/PromoPriceList">滿額折扣</Link></li>
                 </ul>
                 <h6 className="fs-20 grass mb-2">優惠券</h6>

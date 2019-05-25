@@ -9,10 +9,13 @@ class PromoUserList extends Component {
     super(props)
     this.state = {
       campsites: [],
+      camp_img:[],
+      camp_feature:[],
       loading: false,
       currentPage:1,
       totalPages:0,
-      promo:[]
+      promo:[],
+      mem_level:''
     }
   }
 
@@ -43,19 +46,42 @@ class PromoUserList extends Component {
         }),
       })
 
+      const campImageResponse = await fetch('http://localhost:3001/getCampsiteImage',{
+        method: 'GET',
+        headers: new Headers({
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        }),
+      })
+
+      const campFeatureResponse = await fetch('http://localhost:3001/getCampsiteFeature',{
+        method: 'GET',
+        headers: new Headers({
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        }),
+      })
+
       //await setTimeout(() => this.setState({ loading: false }), 5 * 1000)
 
       if (!campsitesResponse.ok) throw new Error(campsitesResponse.statusText)
       if (!totalResponse.ok) throw new Error(totalResponse.statusText)
       if (!promoResponse.ok) throw new Error(promoResponse.statusText)  
+      if (!campImageResponse.ok) throw new Error(campImageResponse.statusText)  
+      if (!campFeatureResponse.ok) throw new Error(campFeatureResponse.statusText)  
+
       
       const campsitesJsonObject = await campsitesResponse.json()
       const totalJsonObject = await totalResponse.json()
       const promoJsonObject = await promoResponse.json()
+      const campImageObject = await campImageResponse.json()
+      const campFeatureJsonObject = await campFeatureResponse.json()
+
       let totalPages = Math.ceil(totalJsonObject.total/6)
+      let mem_level = totalJsonObject.mem_level
       
 
-      await this.setState({ campsites: campsitesJsonObject,totalPages:totalPages,promo: promoJsonObject })
+      await this.setState({ campsites: campsitesJsonObject,totalPages:totalPages,promo: promoJsonObject,camp_img:campImageObject,camp_feature:campFeatureJsonObject,mem_level:mem_level })
       // console.log(this.state.coupons[0].coupon_name)
       this.setState({ loading: false })
     } catch (e) {
@@ -77,6 +103,37 @@ class PromoUserList extends Component {
     }
   }
 
+  changeCurrentPage = async (currentPage) => {
+    try {
+      await this.setState({ loading: true,currentPage:currentPage })
+      let url = 'http://localhost:3001/getPromoUserCamp/'+currentPage
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: new Headers({
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        }),
+      })
+      
+
+      if (!response.ok) throw new Error(response.statusText)
+      
+
+      
+      const responseJsonObject = await response.json()
+     
+      let campsites = responseJsonObject
+      
+
+      await this.setState({ campsites: campsites })
+      
+      this.setState({ loading: false })
+    } catch (e) {
+    } finally {
+    }
+
+};
   
 
 
@@ -163,7 +220,7 @@ class PromoUserList extends Component {
                 return this.state.loading ? (
                   <></>
                 ) : (
-                  <PromoCampCard campsite_data={campsite} />
+                  <PromoCampCard campsite_data={campsite} camp_img={this.state.camp_img.filter(img=> img.camp_id ==  campsite.camp_id)} camp_feature={this.state.camp_feature.filter(feature=>feature.camp_id == campsite.camp_id)}/>
                 )
               })}
                 </div>
@@ -171,7 +228,7 @@ class PromoUserList extends Component {
               </div>
               
 
-              {/* <Pagination changeCurrentPage={this.changeCurrentPage} totalPages={8} currentPage={this.state.currentPage}/> */}
+              <Pagination changeCurrentPage={this.changeCurrentPage} totalPages={this.state.totalPages} currentPage={this.state.currentPage}/>
             </div>
           </div>
         </div>
