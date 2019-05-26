@@ -3,6 +3,7 @@ const fs = require('fs');
 const mysql = require('mysql')
 const cors = require('cors');
 const session = require('express-session');
+const bluebird = require('bluebird')
 
 
 const app = express();
@@ -21,6 +22,10 @@ db.connect((err) => {
   }
   console.log('MySql Connected...');
 });
+
+bluebird.promisifyAll(db)
+
+
 app.use(session({
   saveUninitialized: false,
   resave: false,
@@ -60,12 +65,6 @@ app.get("/", (req, res) => {
     success: true
   });
 });
-
-
-
-
-
-
 
 
 app.get('/getCouponsLimit/:limit', (req, res) => {
@@ -248,37 +247,58 @@ app.post('/obtaincoupon',(req,res)=>{
     is_login:false,
     records:[],
   }
-  if(req.session.user){
-    let mem_account = req.session.user.mem_account
+  // console.log(req.body)
+  if(req.body.mem_account){
+    // let mem_account = req.session.user.mem_account
     // let sql = "INSERT INTO `coupon_gain`(`coupon_genre_id`,`mem_account`) VALUES(?,?)"
-
-    let code_length = 6
-    let rand_str = ""
-    let str = "abcdefghijklmnopqrstuvwxyz0123456789"
-    let str_length = str.length
-    for(let i =0; i< code_length;i++){
-      rand_str+=str.charAt(Math.floor(Math.random()*str_length))
-    }
-
-    let check_code = async(rand_str)=>{
-      let records = await db.queryAsync("SELECT * FROM coupon_gain")
-      console.log(records)
-      return 'a'
-    }
-
+    // let code_length = 6
+    // let rand_str = ""
+    // let str = "abcdefghijklmnopqrstuvwxyz0123456789"
+    // let str_length = str.length
+    // for(let i =0; i< code_length;i++){
+    //   rand_str+=str.charAt(Math.floor(Math.random()*str_length))
+    // }
+    let mem_account = req.body.mem_account
+    let coupon_genre = req.body.coupon_genre
     
-    
-  //   let query = db.query("SELECT * FROM coupon_gain", (err, records) => {
-  //     if(err) throw err;
-      
-  //     records.forEach(record => {
+
+    db.beginTransaction(function(err) {
+      if (err) { throw err; }
+      db.query("SET @update_id := 0", function (error, results, fields) {
+        if (error) {
+          return db.rollback(function() {
+            throw error;
+          });
+        }
+     
         
-  //     });
-      
-  // });
-    
-    
-    
+     
+        db.query("UPDATE `coupon_gain` SET `coupon_genre_id`="+coupon_genre+", `mem_account`='"+mem_account+"',gain_record_id = (SELECT @update_id := gain_record_id) WHERE mem_account='' LIMIT 1", function (error, results, fields) {
+          if (error) {
+            return db.rollback(function() {
+              throw error;
+            });
+          }
+          
+          db.query("SELECT cg.coupon_code FROM coupon_gain as cg WHERE gain_record_id = @update_id", function (error, results, fields) {
+            if (error) {
+              return db.rollback(function() {
+                throw error;
+              });
+            }
+            db.commit(function(err) {
+              if (err) {
+                return db.rollback(function() {
+                  throw err;
+                });
+              }
+              res.json(results)
+            });
+          });
+        });
+      });
+    });
+
     }else{
       res.json(results)
     }

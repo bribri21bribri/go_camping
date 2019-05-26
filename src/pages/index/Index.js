@@ -13,6 +13,7 @@ class Index extends React.Component{
       }
  
     onSubmit= async (account)=>{
+        localStorage.setItem('account',account)
         account = account?account:''
         const response = await fetch('http://localhost:3001/login', {
             method: 'POST',
@@ -27,7 +28,7 @@ class Index extends React.Component{
           if (!response.ok) throw new Error(response.statusText)
           
           const responseJsonObject = await response.text()
-          console.log(responseJsonObject)
+          // console.log(responseJsonObject)
         //   let coupons = searchResponseJsonObject.coupons
         //   await this.setState({ coupons:coupons ,totalPages:totalPages })
       }

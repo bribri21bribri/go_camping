@@ -1,0 +1,64 @@
+.back-drop {
+  background-color: rgba(0, 0, 0, 0.7);
+  height: 100%;
+  position: fixed;
+  transition: all 1.3s;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+.modal-wrapper {
+  background: white;
+  border: 1px solid #d0cccc;
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);
+  transition: all 0.8s;
+  width: 35%;
+  min-width: 420px;
+  height: 420px;
+  z-index: 2;
+  position: absolute;
+}
+.modal_content {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  position: relative;
+}
+.dialogue_head {
+  font-size: 2rem;
+  color: #87b061;
+  margin-bottom: 1rem;
+}
+.dialogue {
+  font-size: 18px;
+}
+.coupon_code {
+  padding: 1.25rem 0.5rem;
+  border: 1px solid #707070;
+  color: #027252;
+  font-size: 1.5rem;
+  margin: 1rem 0;
+}
+.close-modal-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.75rem;
+  transition: 0.5s;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.close-modal-btn:hover {
+  background: #707070;
+  color: #fff;
+}
+.btn_go_center,
+.btn_stay {
+  font-size: 18px;
+}
+.btn_go_center {
+  color: #ba7438;
+}

@@ -12,3 +12,5 @@ SELECT cl.camp_id, cf.campFeature_name,cf.camp_id FROM campsite_list as cl LEFT 
 SELECT p.promo_type, cl.camp_id, cl.camp_name, cl.city, cl.dist, cp.campPrice_weekday FROM promo_apply as p LEFT OUTER JOIN campsite_list as cl on p.camp_id = cl.camp_id LEFT OUTER JOIN campsite_price as cp on cp.camp_id = cl.camp_id WHERE promo_type = "promo_user"
 
 "SELECT p.promo_type, cl.camp_id, cl.camp_name, cl.city, cl.dist, cp.campPrice_weekday FROM promo_apply as p LEFT OUTER JOIN campsite_list as cl on p.camp_id = cl.camp_id LEFT OUTER JOIN campsite_price as cp on cp.camp_id = cl.camp_id WHERE promo_type = 'promo_user'"
+
+SET @update_id := 0;UPDATE `coupon_gain` SET `coupon_genre_id`=1, `mem_account`='testcat',gain_record_id = (SELECT @update_id := gain_record_id) WHERE mem_account='' LIMIT 1;SELECT @update_id

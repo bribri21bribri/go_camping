@@ -7,6 +7,7 @@ import '../../components/marketing.css'
 import '../../components/Default.css'
 import './PromoList.css'
 import Coupon from '../../components/Coupon'
+import CouponModal from '../../components/CouponModal'
 
 
 class CouponList extends React.Component {
@@ -19,6 +20,8 @@ class CouponList extends React.Component {
       loading: false,
       currentPage:1,
       totalPages:0,
+      show_modal: false,
+      coupon_code_obtained:''
     }
   }
 
@@ -198,10 +201,51 @@ class CouponList extends React.Component {
     this.setState({keyword:keyword})
   }
 
+  openModalHandler = () => {
+    this.setState({
+        show_modal: true
+    });
+}
+
+closeModalHandler = () => {
+    this.setState({
+        show_modal: false
+    });
+}
+
+handleClick= async(coupon_data)=>{
+  console.log(coupon_data)
+  let mem_account = localStorage.getItem('account')
+  let coupon_genre = coupon_data.coupon_genre_id
+  let data = {
+    mem_account:mem_account,
+    coupon_genre:coupon_genre
+  }
+  const response = await fetch('http://localhost:3001/obtaincoupon', {
+      method: 'POST',
+      credentials: 'include',
+      headers: new Headers({
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      }),
+      body:JSON.stringify(data)
+    })
+
+    if (!response.ok) throw new Error(response.statusText)
+
+    const responseJsonObject = await response.json()
+    // console.log(responseJsonObject)
+    await this.setState({coupon_code_obtained:responseJsonObject[0].coupon_code?responseJsonObject[0].coupon_code:'',show_modal:true})
+
+}
+
   render() {
     // console.log(this.state)
     return (
       <>
+      { this.state.show_modal ? <div onClick={this.closeModalHandler} className="back-drop"></div> : null }
+      <CouponModal show_modal={this.state.show_modal}
+                    close={this.closeModalHandler} coupon_code_obtained={this.state.coupon_code_obtained?this.state.coupon_code_obtained:''}/>
         <div className="container">
           <div className="row">
             <div className="col-md-3" >
@@ -259,7 +303,7 @@ class CouponList extends React.Component {
                 return this.state.loading ? (
                   <></>
                 ) : (
-                  <Coupon coupon_data={coupon} disabled={disabled}/>
+                  <Coupon coupon_data={coupon} disabled={disabled} handleClick={()=>this.handleClick(coupon)}/>
                 )
               })}
 

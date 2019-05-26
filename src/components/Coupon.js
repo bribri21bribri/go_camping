@@ -17,21 +17,7 @@ class Coupon extends Component {
   //     this.setState({})
   //   }
   // }
-  onClick= async(coupon_data)=>{
-    console.log(coupon_data)
-    const response = await fetch('http://localhost:3001/obtaincoupon', {
-        method: 'POST',
-        credentials: 'include',
-        headers: new Headers({
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        }),
-      })
-
-      if (!response.ok) throw new Error(response.statusText)
-
-      const responseJsonObject = await response.json()
-  }
+  
 
   render() {
     return (
@@ -92,7 +78,7 @@ class Coupon extends Component {
                       : ''
                       }
                 </span>
-                <button onClick={()=>this.onClick(this.props.coupon_data?this.props.coupon_data:null)} disabled={this.props.disabled} className={this.props.disabled?"get_coupon_btn_disabled":"get_coupon_btn"}>
+                <button onClick={this.props.handleClick} disabled={this.props.disabled} className={this.props.disabled?"get_coupon_btn_disabled":"get_coupon_btn"}>
                   {this.props.disabled? "已領取":"我要領取"}
                 </button>
               </div>
