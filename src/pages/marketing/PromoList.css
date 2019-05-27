@@ -13,12 +13,18 @@
   background: no-repeat center;
   background-size: cover;
 }
-.camp_card:nth-child(2n) {
+.camp_card_wrap {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+/* .camp_card:nth-child(2n) {
   padding-left: 0.25rem;
 }
 .camp_card:nth-child(2n + 1) {
   padding-right: 0.25rem;
-}
+} */
 @media (max-width: 768px) {
   .camp_card:nth-child(2n) {
     padding-left: 0;

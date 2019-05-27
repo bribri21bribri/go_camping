@@ -23,66 +23,29 @@ class PromoUserList extends Component {
     try {
       await this.setState({ loading: true })
 
-      const campsitesResponse = await fetch('http://localhost:3001/getPromoUserCamp/'+this.state.currentPage, {
+      const response = await fetch('http://localhost:3001/getPromoUserCamp/'+this.state.currentPage, {
         method: 'GET',
         headers: new Headers({
           Accept: 'application/json',
           'Content-Type': 'application/json',
         }),
       })
-      const totalResponse = await fetch('http://localhost:3001/getPromoUserCampCount',{
-        method: 'GET',
-        headers: new Headers({
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        }),
-      })
-
-      const promoResponse = await fetch('http://localhost:3001/getPromoUser',{
-        method: 'GET',
-        headers: new Headers({
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        }),
-      })
-
-      const campImageResponse = await fetch('http://localhost:3001/getCampsiteImage',{
-        method: 'GET',
-        headers: new Headers({
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        }),
-      })
-
-      const campFeatureResponse = await fetch('http://localhost:3001/getCampsiteFeature',{
-        method: 'GET',
-        headers: new Headers({
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        }),
-      })
-
-      //await setTimeout(() => this.setState({ loading: false }), 5 * 1000)
-
-      if (!campsitesResponse.ok) throw new Error(campsitesResponse.statusText)
-      if (!totalResponse.ok) throw new Error(totalResponse.statusText)
-      if (!promoResponse.ok) throw new Error(promoResponse.statusText)  
-      if (!campImageResponse.ok) throw new Error(campImageResponse.statusText)  
-      if (!campFeatureResponse.ok) throw new Error(campFeatureResponse.statusText)  
-
-      
-      const campsitesJsonObject = await campsitesResponse.json()
-      const totalJsonObject = await totalResponse.json()
-      const promoJsonObject = await promoResponse.json()
-      const campImageObject = await campImageResponse.json()
-      const campFeatureJsonObject = await campFeatureResponse.json()
-
-      let totalPages = Math.ceil(totalJsonObject.total/6)
-      let mem_level = totalJsonObject.mem_level
       
 
-      await this.setState({ campsites: campsitesJsonObject,totalPages:totalPages,promo: promoJsonObject,camp_img:campImageObject,camp_feature:campFeatureJsonObject,mem_level:mem_level })
-      // console.log(this.state.coupons[0].coupon_name)
+      if (!response.ok) throw new Error(response.statusText)
+
+      const responseJsonObject = await response.json()
+
+     
+
+      console.log(responseJsonObject)
+      let totalPages = Math.ceil(responseJsonObject.total/6)
+
+     
+      
+
+      await this.setState({ campsites: responseJsonObject.campsites,totalPages:totalPages,promo: responseJsonObject.promo_rules,camp_img:responseJsonObject.camp_images,camp_feature:responseJsonObject.camp_features })
+      // // console.log(this.state.coupons[0].coupon_name)
       this.setState({ loading: false })
     } catch (e) {
     } finally {
@@ -215,7 +178,7 @@ class PromoUserList extends Component {
               </div>
 
               <div className="promo_camsite_list">
-                <div className="row d-flex">
+                <div className="camp_card_wrap">
                 {this.state.campsites.map(campsite => {
                 return this.state.loading ? (
                   <></>

@@ -24,7 +24,7 @@ class Coupon extends Component {
       <div className=" flex-column d-flex flex-md-row">
         <>
           <div className="coupon mb-2">
-            <div className="coupon_img_wrap   col-lg-4">
+            <div className="coupon_img_wrap  ">
               <img
                 src={
                   this.props.coupon_data
@@ -34,7 +34,7 @@ class Coupon extends Component {
                 alt=""
               />
             </div>
-            <div className="coupon_info  col-lg-8">
+            <div className="coupon_info  ">
               <div className="coupon_info_main">
                 <ul className="d-flex">
                   <li className="fw-bold fs-24">

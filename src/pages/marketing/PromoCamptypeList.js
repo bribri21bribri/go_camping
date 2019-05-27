@@ -19,14 +19,7 @@ class PromoCamptypeList extends Component {
     try {
       await this.setState({ loading: true })
 
-      const campsitesResponse = await fetch('http://localhost:3001/getPromoUserCamp/'+this.state.currentPage, {
-        method: 'GET',
-        headers: new Headers({
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        }),
-      })
-      const totalResponse = await fetch('http://localhost:3001/getPromoUserCampCount',{
+      const response = await fetch('http://localhost:3001/getPromoCamptypeCamp/'+this.state.currentPage, {
         method: 'GET',
         headers: new Headers({
           Accept: 'application/json',
@@ -34,28 +27,20 @@ class PromoCamptypeList extends Component {
         }),
       })
 
-      const promoResponse = await fetch('http://localhost:3001/getPromoUser',{
-        method: 'GET',
-        headers: new Headers({
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        }),
-      })
 
-      //await setTimeout(() => this.setState({ loading: false }), 5 * 1000)
+      if (!response.ok) throw new Error(response.statusText)
 
-      if (!campsitesResponse.ok) throw new Error(campsitesResponse.statusText)
-      if (!totalResponse.ok) throw new Error(totalResponse.statusText)
-      if (!promoResponse.ok) throw new Error(promoResponse.statusText)  
       
-      const campsitesJsonObject = await campsitesResponse.json()
-      const totalJsonObject = await totalResponse.json()
-      const promoJsonObject = await promoResponse.json()
-      let totalPages = Math.ceil(totalJsonObject.total/6)
-      
+      const responseJsonObject = await response.json()
 
-      await this.setState({ campsites: campsitesJsonObject,totalPages:totalPages,promo: promoJsonObject })
-      // console.log(this.state.coupons[0].coupon_name)
+
+      console.log(responseJsonObject)
+      let totalPages = Math.ceil(responseJsonObject.total/6)
+
+
+      
+      await this.setState({ campsites: responseJsonObject.campsites,totalPages:totalPages,promo: responseJsonObject.promo_rules,camp_img:responseJsonObject.camp_images,camp_feature:responseJsonObject.camp_features })
+
       this.setState({ loading: false })
     } catch (e) {
     } finally {
@@ -157,7 +142,7 @@ class PromoCamptypeList extends Component {
               </div>
 
               <div className="promo_camsite_list">
-                <div className="row d-flex">
+                <div className="camp_card_wrap">
                 {this.state.campsites.map(campsite => {
                 return this.state.loading ? (
                   <></>

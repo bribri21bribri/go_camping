@@ -1,5 +1,7 @@
 .camp_card {
-  flex-basis: 50%;
+  flex-basis: 49%;
+  flex-shrink: 0;
+  border: 1px solid #ccc;
 }
 @media (max-width: 768px) {
   .camp_card {
@@ -34,7 +36,7 @@
   border-top: 1px solid transparent;
 }
 .campsite_info {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
 }
 .campsite_info_main {
   margin-right: auto;

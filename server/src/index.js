@@ -56,16 +56,6 @@ app.use(cors(corsOptions));
 //Routers
 
 
-// app.use('/users',require('./routes/users'))
-// app.use('/marketing',require('./routes/marketing'))
-
-
-app.get("/", (req, res) => {
-  res.json({
-    success: true
-  });
-});
-
 
 app.get('/getCouponsLimit/:limit', (req, res) => {
   // console.log(req.params)
@@ -78,87 +68,249 @@ app.get('/getCouponsLimit/:limit', (req, res) => {
 });
 
 
-app.get('/getPromoUserCampCount',(req,res)=>{
-  let sql = 'SELECT * FROM promo_apply as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id  WHERE promo_type = "promo_user"'
-  let query = db.query(sql, (err, camps) => {
-    if(err) throw err;
-    let total = camps.length
-    console.log(total)
-    res.send({total:total,mem_level:req.session.user?req.session.user.memLevel_id:false})
-});
-})
+
 
 app.get('/getPromoUserCamp/:page', (req, res) => {
   let results = {}
   let start = (req.params.page-1)*6
   let perPage = 6
   let sql = "SELECT p.promo_type, cl.camp_id, cl.camp_name, cl.city, cl.dist, cp.campPrice_weekday FROM promo_apply as p LEFT OUTER JOIN campsite_list as cl on p.camp_id = cl.camp_id LEFT OUTER JOIN campsite_price as cp on cp.camp_id = cl.camp_id WHERE promo_type = 'promo_user' LIMIT "+start+','+perPage;
-  let query = db.query(sql, (err, campsites) => {
-      if(err) throw err;
-      console.log(campsites)
-      res.json(campsites)
+  db.beginTransaction(function(err){
+    if(err) {throw err}
+
+    let query = db.query(sql, (err, campsites) => {
+      if (err) {
+        return db.rollback(function() {
+          throw err;
+        });
+      }
+      // console.log(campsites)
+      results.campsites =campsites
+
+      sql = 'SELECT * FROM promo_apply as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id  WHERE promo_type = "promo_user"'
+      query = db.query(sql, (err, camps) => {
+        if (err) {
+          return db.rollback(function() {
+            throw err;
+          });
+        }
+        let total = camps.length
+        // console.log(total)
+        results.total = total
+        
+        sql = "SELECT cp.camp_id, cp.camp_image FROM campsite_image as cp"
+        query = db.query(sql,(err,camp_images)=>{
+          if (err) {
+            return db.rollback(function() {
+              throw err;
+            });
+          }
+
+          results.camp_images = camp_images
+
+          sql = "SELECT cf.camp_id,cf.campFeature_name FROM campsite_feature as cf"
+          query = db.query(sql,(err,camp_features)=>{
+            if (err) {
+              return db.rollback(function() {
+                throw err;
+              });
+            }
+
+            results.camp_features =camp_features
+
+            sql = 'SELECT * FROM promo_user'
+            query = db.query(sql, (err, promo_rules) => {
+              if (err) {
+                return db.rollback(function() {
+                  throw err;
+                });
+              }
+                // console.log(promo_rules)
+                results.promo_rules = promo_rules
+
+                db.commit(function(err) {
+                  if (err) {
+                    return db.rollback(function() {
+                      throw err;
+                    });
+                  }
+                  res.json(results)
+                });
+            });
+          })
+
+        })
+
+    });
+
+
   });
+  })
 });
 
-app.get('/getPromoPriceCampCount',(req,res)=>{
-  let sql = 'SELECT * FROM promo_apply as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id  WHERE promo_type = "promo_price"'
-  let query = db.query(sql, (err, camps) => {
-    if(err) throw err;
-    let total = camps.length
-    console.log(total)
-    res.send({total:total,mem_level:req.session.user?req.session.user.memLevel_id:false})
-});
-})
+
+
+
+
+
+
 
 app.get('/getPromoPriceCamp/:page', (req, res) => {
   let results = {}
   let start = (req.params.page-1)*6
   let perPage = 6
-  let sql = "SELECT p.promo_type, cl.camp_id, cl.camp_name, cl.city, cl.dist, cp.campPrice_weekday FROM promo_apply as p LEFT OUTER JOIN campsite_list as cl on p.camp_id = cl.camp_id LEFT OUTER JOIN campsite_price as cp on cp.camp_id = cl.camp_id WHERE promo_type = 'promo_price' LIMIT "+start+','+perPage;
-  let query = db.query(sql, (err, campsites) => {
-      if(err) throw err;
-      console.log(campsites)
-      res.json(campsites)
+  let sql = "SELECT p.promo_type, cl.camp_id, cl.camp_name, cl.city, cl.dist, cp.campPrice_weekday FROM promo_apply as p LEFT OUTER JOIN campsite_list as cl on p.camp_id = cl.camp_id LEFT OUTER JOIN campsite_price as cp on cp.camp_id = cl.camp_id WHERE promo_type = 'promo_price' LIMIT  "+start+','+perPage;
+  db.beginTransaction(function(err){
+    if(err) {throw err}
+
+    let query = db.query(sql, (err, campsites) => {
+      if (err) {
+        return db.rollback(function() {
+          throw err;
+        });
+      }
+      // console.log(campsites)
+      results.campsites =campsites
+
+      sql = 'SELECT * FROM promo_apply as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id  WHERE promo_type = "promo_price"'
+      query = db.query(sql, (err, camps) => {
+        if (err) {
+          return db.rollback(function() {
+            throw err;
+          });
+        }
+        let total = camps.length
+        // console.log(total)
+        results.total = total
+        
+        sql = "SELECT cp.camp_id, cp.camp_image FROM campsite_image as cp"
+        query = db.query(sql,(err,camp_images)=>{
+          if (err) {
+            return db.rollback(function() {
+              throw err;
+            });
+          }
+
+          results.camp_images = camp_images
+
+          sql = "SELECT cf.camp_id,cf.campFeature_name FROM campsite_feature as cf"
+          query = db.query(sql,(err,camp_features)=>{
+            if (err) {
+              return db.rollback(function() {
+                throw err;
+              });
+            }
+
+            results.camp_features =camp_features
+
+            sql = 'SELECT * FROM promo_price'
+            query = db.query(sql, (err, promo_rules) => {
+              if (err) {
+                return db.rollback(function() {
+                  throw err;
+                });
+              }
+                // console.log(promo_rules)
+                results.promo_rules = promo_rules
+
+                db.commit(function(err) {
+                  if (err) {
+                    return db.rollback(function() {
+                      throw err;
+                    });
+                  }
+                  res.json(results)
+                });
+            });
+          })
+
+        })
+    });
   });
-});
-
-app.get('/getCampsiteFeature',(req,res)=>{
-  
-  let sql = "SELECT cf.camp_id,cf.campFeature_name FROM campsite_feature as cf"
-  let query = db.query(sql,(err,camp_features)=>{
-    if(err) throw err
-
-    res.json(camp_features)
   })
-})
+});
 
-app.get('/getCampsiteImage',(req,res)=>{
-  
-  let sql = "SELECT cp.camp_id, cp.camp_image FROM campsite_image as cp"
-  let query = db.query(sql,(err,camp_images)=>{
-    if(err) throw err
 
-    res.json(camp_images)
+
+
+
+app.get('/getPromoCamptypeCamp/:page', (req, res) => {
+  let results = {}
+  let start = (req.params.page-1)*6
+  let perPage = 6
+  let sql = "SELECT p.promo_type, cl.camp_id, cl.camp_name, cl.city, cl.dist, cp.campPrice_weekday FROM promo_apply as p LEFT OUTER JOIN campsite_list as cl on p.camp_id = cl.camp_id LEFT OUTER JOIN campsite_price as cp on cp.camp_id = cl.camp_id WHERE promo_type = 'promo_campType' LIMIT  "+start+','+perPage;
+  db.beginTransaction(function(err){
+    if(err) {throw err}
+
+    let query = db.query(sql, (err, campsites) => {
+      if (err) {
+        return db.rollback(function() {
+          throw err;
+        });
+      }
+      // console.log(campsites)
+      results.campsites =campsites
+
+      sql = 'SELECT * FROM promo_apply as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id  WHERE promo_type = "promo_campType"'
+      query = db.query(sql, (err, camps) => {
+        if (err) {
+          return db.rollback(function() {
+            throw err;
+          });
+        }
+        let total = camps.length
+        // console.log(total)
+        results.total = total
+        
+        sql = "SELECT cp.camp_id, cp.camp_image FROM campsite_image as cp"
+        query = db.query(sql,(err,camp_images)=>{
+          if (err) {
+            return db.rollback(function() {
+              throw err;
+            });
+          }
+
+          results.camp_images = camp_images
+
+          sql = "SELECT cf.camp_id,cf.campFeature_name FROM campsite_feature as cf"
+          query = db.query(sql,(err,camp_features)=>{
+            if (err) {
+              return db.rollback(function() {
+                throw err;
+              });
+            }
+
+            results.camp_features =camp_features
+
+            sql = 'SELECT * FROM promo_campType'
+            query = db.query(sql, (err, promo_rules) => {
+              if (err) {
+                return db.rollback(function() {
+                  throw err;
+                });
+              }
+                // console.log(promo_rules)
+                results.promo_rules = promo_rules
+
+                db.commit(function(err) {
+                  if (err) {
+                    return db.rollback(function() {
+                      throw err;
+                    });
+                  }
+                  res.json(results)
+                });
+            });
+          })
+
+        })
+    });
+  });
   })
-})
-
-app.get('/getPromoUser', (req, res) => {
-  let sql = 'SELECT * FROM promo_user'
-  let query = db.query(sql, (err, PromoUser) => {
-      if(err) throw err;
-      console.log(PromoUser)
-      res.json(PromoUser)
-  });
 });
 
-app.get('/getPromoPrice', (req, res) => {
-  let sql = 'SELECT * FROM promo_price'
-  let query = db.query(sql, (err, PromoPrice) => {
-      if(err) throw err;
-      console.log(PromoPrice)
-      res.json(PromoPrice)
-  });
-});
+
+
 
 
 app.get('/getcoupons/:page/:keyword?', (req, res) => {
@@ -300,7 +452,8 @@ app.post('/obtaincoupon',(req,res)=>{
     });
 
     }else{
-      res.json(results)
+      //TODO:導向登入頁面
+      res.redirect('');
     }
 })
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import Carousel from '../../components/Carousel'
-import '../../components/marketing.css'
+import './marketing.css'
 import '../../components/Default.css'
 import { BrowserRouter as Router, Route, Switch,Link } from 'react-router-dom'
 
@@ -56,10 +56,10 @@ class Marketing extends React.Component{
               <div className="row">
                 <h4 className="grass fs-32">優惠專區</h4>
               </div>
-              <div className="row">
-                <div className="col-md-4 promo_link_wrap"><Link to="/PromoUserList"><span>會員優惠</span><img src="assets/img/campsite1.jpg" alt=""/></Link></div>
-                <div className="col-md-4 promo_link_wrap"><Link to="/PromoCamptypeList"><span>營地分類優惠</span><img src="assets/img/campsite1.jpg" alt=""/></Link></div>
-                <div className="col-md-4 promo_link_wrap"><Link to="/PromoPriceList"><span>滿額折扣</span><img src="assets/img/campsite1.jpg" alt=""/></Link></div>
+              <div className=" promo_links">
+                <div className=" promo_link_wrap"><Link to="/PromoUserList"><span>會員優惠</span><img src="assets/img/campsite1.jpg" alt=""/></Link></div>
+                <div className=" promo_link_wrap"><Link to="/PromoCamptypeList"><span>營地分類優惠</span><img src="assets/img/campsite1.jpg" alt=""/></Link></div>
+                <div className=" promo_link_wrap"><Link to="/PromoPriceList"><span>滿額折扣</span><img src="assets/img/campsite1.jpg" alt=""/></Link></div>
               </div>
             </div>
          </section>

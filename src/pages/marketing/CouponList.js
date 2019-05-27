@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch,Link } from 'react-router-dom'
 
 import Pagination from '../../components/Pagination'
 import CouponSearchbar from '../../components/CouponSearchbar'
-import '../../components/marketing.css'
+
 import '../../components/Default.css'
 import './PromoList.css'
 import Coupon from '../../components/Coupon'
@@ -106,46 +106,18 @@ class CouponList extends React.Component {
           }),
         })
         
-  
         if (!response.ok) throw new Error(response.statusText)
-        
-  
         
         const responseJsonObject = await response.json()
        
         let coupons = responseJsonObject.coupons
         
-  
         await this.setState({ coupons: coupons })
         
         this.setState({ loading: false })
       } catch (e) {
-      } finally {
       }
-    // this.setState({ currentPage: numPage });
-    // try {
-    //   await this.setState({ loading: true })
 
-    //   const CouponsResponse = await fetch('http://localhost:3001/getCouponsPage/'+this.state.currentPage, {
-    //     method: 'GET',
-    //     headers: new Headers({
-    //       Accept: 'application/json',
-    //       'Content-Type': 'application/json',
-    //     }),
-    //   })
-    
-
-    //   if (!CouponsResponse.ok) throw new Error(CouponsResponse.statusText)
-
-      
-    //   const couponsJsonObject = await CouponsResponse.json()
-      
-
-    //   await this.setState({ coupons: couponsJsonObject})
-    //   // console.log(this.state.coupons[0].coupon_name)
-    //   this.setState({ loading: false })
-    // } catch (e) {
-    // } 
   };
 
   onSubmit= async (keyword)=>{
@@ -214,7 +186,7 @@ closeModalHandler = () => {
 }
 
 handleClick= async(coupon_data)=>{
-  console.log(coupon_data)
+  // console.log(coupon_data)
   let mem_account = localStorage.getItem('account')
   let coupon_genre = coupon_data.coupon_genre_id
   let data = {
@@ -296,7 +268,7 @@ handleClick= async(coupon_data)=>{
               {this.state.coupons.map(coupon => {
                 let disabled = false
                 let already_get = this.state.coupon_records.filter(record=>record.coupon_genre_id == coupon.coupon_genre_id)
-                console.log(already_get)
+                
                 if(already_get.length>0){
                   disabled = true
                 }
