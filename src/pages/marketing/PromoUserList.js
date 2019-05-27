@@ -101,6 +101,7 @@ class PromoUserList extends Component {
 
 
   render() {
+    let val =  this.state.camp_feature
     return (
       <>
         <div className="container">
@@ -183,7 +184,7 @@ class PromoUserList extends Component {
                 return this.state.loading ? (
                   <></>
                 ) : (
-                  <PromoCampCard campsite_data={campsite} camp_img={this.state.camp_img.filter(img=> img.camp_id ==  campsite.camp_id)} camp_feature={this.state.camp_feature.filter(feature=>feature.camp_id == campsite.camp_id)}/>
+                  <PromoCampCard key={campsite.camp_id} campsite_data={campsite} camp_img={this.state.camp_img.filter(img=> img.camp_id ==  campsite.camp_id)} camp_feature={this.state.camp_feature.filter(feature=>feature.camp_id == campsite.camp_id)} promo_rules={this.state.promo}/>
                 )
               })}
                 </div>

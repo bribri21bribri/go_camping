@@ -68,13 +68,13 @@ app.get('/getCouponsLimit/:limit', (req, res) => {
 });
 
 
-
+//"SELECT p.promo_type, cl.camp_id, cl.camp_name, cl.city, cl.dist, ct.camp_pricew, ct.camp_type FROM promo_apply as p LEFT OUTER JOIN campsite_list as cl on p.camp_id = cl.camp_id LEFT OUTER JOIN campsite_type as ct on ct.camp_id = cl.camp_id WHERE promo_type = 'promo_user' LIMIT "+start+','+perPage;
 
 app.get('/getPromoUserCamp/:page', (req, res) => {
   let results = {}
   let start = (req.params.page-1)*6
   let perPage = 6
-  let sql = "SELECT p.promo_type, cl.camp_id, cl.camp_name, cl.city, cl.dist, cp.campPrice_weekday FROM promo_apply as p LEFT OUTER JOIN campsite_list as cl on p.camp_id = cl.camp_id LEFT OUTER JOIN campsite_price as cp on cp.camp_id = cl.camp_id WHERE promo_type = 'promo_user' LIMIT "+start+','+perPage;
+  let sql = "SELECT p.promo_type, cl.camp_id, cl.camp_name, cl.city, cl.dist FROM promo_apply as p LEFT OUTER JOIN campsite_list as cl on p.camp_id = cl.camp_id  WHERE promo_type = 'promo_user' LIMIT "+start+','+perPage;
   db.beginTransaction(function(err){
     if(err) {throw err}
 
@@ -86,6 +86,14 @@ app.get('/getPromoUserCamp/:page', (req, res) => {
       }
       // console.log(campsites)
       results.campsites =campsites
+      // console.log(campsites)
+      let camp_ids = []
+
+      for(let campsite of campsites){
+        camp_ids.push(campsite.camp_id)
+      }
+      // console.log(camp_ids)
+
 
       sql = 'SELECT * FROM promo_apply as o LEFT OUTER JOIN campsite_list as p on o.camp_id = p.camp_id  WHERE promo_type = "promo_user"'
       query = db.query(sql, (err, camps) => {
@@ -98,7 +106,17 @@ app.get('/getPromoUserCamp/:page', (req, res) => {
         // console.log(total)
         results.total = total
         
-        sql = "SELECT cp.camp_id, cp.camp_image FROM campsite_image as cp"
+        sql = "SELECT cp.camp_id, cp.camp_image FROM campsite_image as cp WHERE  "
+        let index=1
+        
+        for(let camp_id of camp_ids){
+          if(index!=camp_ids.length){
+            sql+= ('camp_id = '+camp_id+ ' OR ')
+          }else{
+            sql+= ('camp_id = '+camp_id)
+          }
+          index++
+        }
         query = db.query(sql,(err,camp_images)=>{
           if (err) {
             return db.rollback(function() {
@@ -108,7 +126,18 @@ app.get('/getPromoUserCamp/:page', (req, res) => {
 
           results.camp_images = camp_images
 
-          sql = "SELECT cf.camp_id,cf.campFeature_name FROM campsite_feature as cf"
+          // sql = "SELECT cf.camp_id,cf.campFeature_name FROM campsite_feature as cf"
+          sql = "SELECT ct.camp_id,ct.camp_type, ct.camp_pricew, ct.camp_priceh FROM campsite_type as ct WHERE "
+          index = 1
+          for(let camp_id of camp_ids){
+            if(index!=camp_ids.length){
+              sql+= ('camp_id = '+camp_id+ ' OR ')
+            }else{
+              sql+= ('camp_id = '+camp_id)
+            }
+            index++
+          }
+          console.log(sql)
           query = db.query(sql,(err,camp_features)=>{
             if (err) {
               return db.rollback(function() {
@@ -142,8 +171,6 @@ app.get('/getPromoUserCamp/:page', (req, res) => {
         })
 
     });
-
-
   });
   })
 });
