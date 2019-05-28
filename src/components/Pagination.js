@@ -21,12 +21,17 @@ class Pagination extends Component {
     if(props.totalPages!==state.totalPage){
       if(props.totalPages <= 8){
         
-        for(let i = props.currentPage ;i>0;i--){
+        for(let i = props.totalPages ;i>0;i--){
           pArray.push(i)
         }
-        for(let j = props.currentPage+1; j<props.totalPage;j++ ){
-          nArray.push(j)
-        }
+        // for(let j = props.currentPage+1; j<=props.totalPage;j++ ){
+        //   nArray.push(j)
+        // }
+        //  let j = props.currentPage+1
+        // while(j<props.totalPage){
+        //   nArray.push(j)
+        //   j++
+        // }
         pArray.reverse()
         return {totalPages:props.totalPages,prev_pages:pArray,next_pages:nArray}
       }else{

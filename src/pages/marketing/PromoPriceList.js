@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch,Link } from 'react-router-dom'
 import Pagination from '../../components/Pagination'
 import PromoCampCard from '../../components/PromoCampCard'
 
+import './PromoList.css'
 class PromoPriceList extends Component {
   constructor(props) {
     super(props)
@@ -51,18 +52,7 @@ class PromoPriceList extends Component {
 
   }
   
-  trans_requirement=requirement=>{
-    switch(requirement){
-      case 1:
-        return '露營新手'
-        break
-      case 2:
-        return '業餘露營家'
-        break
-      case 3:
-        return '露營達人'
-    }
-  }
+  
 
   changeCurrentPage = async (currentPage) => {
     try {
@@ -84,10 +74,11 @@ class PromoPriceList extends Component {
       
       const responseJsonObject = await response.json()
      
-      let campsites = responseJsonObject
+      let totalPages = Math.ceil(responseJsonObject.total/6)
+      
       
 
-      await this.setState({ campsites: campsites })
+      await this.setState({ campsites: responseJsonObject.campsites,totalPages:totalPages,promo: responseJsonObject.promo_rules,camp_img:responseJsonObject.camp_images,camp_feature:responseJsonObject.camp_features })
       
       this.setState({ loading: false })
     } catch (e) {
@@ -95,7 +86,30 @@ class PromoPriceList extends Component {
     }
 
 };
-
+getMinPriceBeforeDiscount = (camp_feature) =>{
+  let minPrice = camp_feature.reduce((prev, curr)=>{
+    return prev.camp_pricew < curr.camp_pricew? prev.camp_pricew: curr.camp_pricew
+  })
+  return minPrice
+ }
+ getMinPriceAfterDiscount = (camp_feature, promo_rules) =>{
+  let minPriceBefore = camp_feature.reduce((prev, curr)=>{
+    return prev.camp_pricew < curr.camp_pricew? prev.camp_pricew: curr.camp_pricew
+  })
+  let minPriceAfterArray = promo_rules.map(promo_rule=>{
+    if(promo_rule.discount_type=='percentage'){
+      console.log(promo_rule.discount_unit)
+      return minPriceBefore*('0.'+promo_rule.discount_unit)
+    }else{
+      console.log(promo_rule.discount_unit)
+      return minPriceBefore-promo_rule.discount_unit
+    }
+  })
+  let minPriceAfterDiscount = minPriceAfterArray.reduce((prev, curr)=>{
+    return prev < curr?prev:curr;
+  })
+  return minPriceAfterDiscount
+ }
   
 
 
@@ -133,7 +147,7 @@ class PromoPriceList extends Component {
               <h6 className="fs-20 grass mb-2">優惠專區</h6>
                 <ul className="mb-2">
                   
-                  <li className="side_menu_link"><Link className="wood fs-20" to="/PromoUserList">會員優惠</Link></li>
+                  <li className="side_menu_link"><Link className="fs-20" to="/PromoUserList">會員優惠</Link></li>
                   <li className="side_menu_link "><Link className="fs-20" to="/PromoCamptypeList">營地分類優惠</Link></li>
                   <li className="side_menu_link  is-actived"><Link className="fs-20" to="/PromoPriceList">滿額折扣</Link></li>
                 </ul>
@@ -161,7 +175,7 @@ class PromoPriceList extends Component {
                           return this.state.loading ? (
                             <></>
                           ) : (
-                            <li>{this.trans_requirement(p.requirement)}:{p.discription}</li>
+                            <li></li>
                           )
                         })}
                           
@@ -179,7 +193,7 @@ class PromoPriceList extends Component {
                 return this.state.loading ? (
                   <></>
                 ) : (
-                  <PromoCampCard campsite_data={campsite} camp_img={this.state.camp_img.filter(img=> img.camp_id ==  campsite.camp_id)} camp_feature={this.state.camp_feature.filter(feature=>feature.camp_id == campsite.camp_id)}/>
+                  <PromoCampCard key={campsite.camp_id} campsite_data={campsite} camp_img={this.state.camp_img.filter(img=> img.camp_id ==  campsite.camp_id)} camp_feature={this.state.camp_feature.filter(feature=>feature.camp_id == campsite.camp_id)} promo_rules={this.state.promo} getMinPriceBeforeDiscount={this.getMinPriceBeforeDiscount} getMinPriceAfterDiscount={this.getMinPriceAfterDiscount}/>
                 )
               })}
                 </div>

@@ -47,20 +47,64 @@ class PromoCamptypeList extends Component {
     }
 
   }
-  
-  trans_requirement=requirement=>{
-    switch(requirement){
-      case 1:
-        return '露營新手'
-        break
-      case 2:
-        return '業餘露營家'
-        break
-      case 3:
-        return '露營達人'
-    }
-  }
 
+  changeCurrentPage = async (currentPage) => {
+    try {
+      await this.setState({ loading: true,currentPage:currentPage })
+      let url = 'http://localhost:3001/getPromoCamptypeCamp/'+currentPage
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: new Headers({
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        }),
+      })
+      
+
+      if (!response.ok) throw new Error(response.statusText)
+      
+
+      
+      const responseJsonObject = await response.json()
+     
+      let totalPages = Math.ceil(responseJsonObject.total/6)
+      
+      
+
+      await this.setState({ campsites: responseJsonObject.campsites,totalPages:totalPages,promo: responseJsonObject.promo_rules,camp_img:responseJsonObject.camp_images,camp_feature:responseJsonObject.camp_features })
+      
+      this.setState({ loading: false })
+    } catch (e) {
+    } finally {
+    }
+
+};
+  
+  getMinPriceBeforeDiscount = (camp_feature) =>{
+    let minPrice = camp_feature.reduce((prev, curr)=>{
+      return prev.camp_pricew < curr.camp_pricew? prev.camp_pricew: curr.camp_pricew
+    })
+    return minPrice
+   }
+   getMinPriceAfterDiscount = (camp_feature, promo_rules) =>{
+    let minPriceBefore = camp_feature.reduce((prev, curr)=>{
+      return prev.camp_pricew < curr.camp_pricew? prev.camp_pricew: curr.camp_pricew
+    })
+    let minPriceAfterArray = promo_rules.map(promo_rule=>{
+      if(promo_rule.discount_type=='percentage'){
+        console.log(promo_rule.discount_unit)
+        return minPriceBefore*('0.'+promo_rule.discount_unit)
+      }else{
+        console.log(promo_rule.discount_unit)
+        return minPriceBefore-promo_rule.discount_unit
+      }
+    })
+    let minPriceAfterDiscount = minPriceAfterArray.reduce((prev, curr)=>{
+      return prev < curr?prev:curr;
+    })
+    return minPriceAfterDiscount
+   }
   
 
 
@@ -113,11 +157,11 @@ class PromoCamptypeList extends Component {
               </div>
             </div>
             <div className="col-md-9">
-              <h4 className="grass fs-32">會員優惠</h4>
+              <h4 className="grass fs-32">營地分類優惠</h4>
               <div className="mb-4 discription_block">
                 
                 <div>
-                <div className="promo_discription_img" style={{backgroundImage: "url(" + 'assets/img/campsite3.jpg' + ")"}}><h4>會員優惠</h4></div>
+                <div className="promo_discription_img" style={{backgroundImage: "url(" + 'assets/img/campsite3.jpg' + ")"}}><h4>營地分類優惠</h4></div>
                 <div className="promo_discription_content">
                   <div>
                     <ul>
@@ -129,7 +173,7 @@ class PromoCamptypeList extends Component {
                           return this.state.loading ? (
                             <></>
                           ) : (
-                            <li>{this.trans_requirement(p.requirement)}:{p.discription}</li>
+                            <li></li>
                           )
                         })}
                           
@@ -147,7 +191,7 @@ class PromoCamptypeList extends Component {
                 return this.state.loading ? (
                   <></>
                 ) : (
-                  <PromoCampCard campsite_data={campsite} />
+                  <PromoCampCard key={campsite.camp_id} campsite_data={campsite} camp_img={this.state.camp_img.filter(img=> img.camp_id ==  campsite.camp_id)} camp_feature={this.state.camp_feature.filter(feature=>feature.camp_id == campsite.camp_id)} promo_rules={this.state.promo} getMinPriceBeforeDiscount={this.getMinPriceBeforeDiscount} getMinPriceAfterDiscount={this.getMinPriceAfterDiscount}/>
                 )
               })}
                 </div>
@@ -155,7 +199,7 @@ class PromoCamptypeList extends Component {
               </div>
               
 
-              {/* <Pagination changeCurrentPage={this.changeCurrentPage} totalPages={8} currentPage={this.state.currentPage}/> */}
+              <Pagination changeCurrentPage={this.changeCurrentPage} totalPages={this.state.totalPages} currentPage={this.state.currentPage}/>
             </div>
           </div>
         </div>

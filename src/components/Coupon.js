@@ -17,6 +17,11 @@ class Coupon extends Component {
   //     this.setState({})
   //   }
   // }
+  toDateString=()=>{
+    let d = new Date(this.props.coupon_data.coupon_expire+'').toLocaleDateString().split('/')
+    let s = d[0]+"年"+d[1]+"月"+d[2]+"日"
+    return s
+  }
   
 
   render() {
@@ -45,7 +50,7 @@ class Coupon extends Component {
                   <li className="fs-20">
                     <i className="far fa-clock" />
                     {this.props.coupon_data
-                      ? this.props.coupon_data.coupon_expire
+                      ?"適用日期: "+ this.toDateString()+"前"
                       : ''}
                   </li>
                   <li className="fw-bold fs-24">

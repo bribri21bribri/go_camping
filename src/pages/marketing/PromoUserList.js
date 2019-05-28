@@ -87,9 +87,10 @@ class PromoUserList extends Component {
       const responseJsonObject = await response.json()
      
       let campsites = responseJsonObject
+      let totalPages = Math.ceil(responseJsonObject.total/6)
       
 
-      await this.setState({ campsites: campsites })
+      await this.setState({ campsites: responseJsonObject.campsites,totalPages:totalPages,promo: responseJsonObject.promo_rules,camp_img:responseJsonObject.camp_images,camp_feature:responseJsonObject.camp_features })
       
       this.setState({ loading: false })
     } catch (e) {
@@ -97,10 +98,36 @@ class PromoUserList extends Component {
     }
 
 };
+
+getMinPriceBeforeDiscount = (camp_feature) =>{
+  let minPrice = camp_feature.reduce((prev, curr)=>{
+    return prev.camp_pricew < curr.camp_pricew? prev.camp_pricew: curr.camp_pricew
+  })
+  return minPrice
+ }
+ getMinPriceAfterDiscount = (camp_feature, promo_rules) =>{
+  let minPriceBefore = camp_feature.reduce((prev, curr)=>{
+    return prev.camp_pricew < curr.camp_pricew? prev.camp_pricew: curr.camp_pricew
+  })
+  let minPriceAfterArray = promo_rules.map(promo_rule=>{
+    if(promo_rule.discount_type=='percentage'){
+      console.log(promo_rule.discount_unit)
+      return minPriceBefore*('0.'+promo_rule.discount_unit)
+    }else{
+      console.log(promo_rule.discount_unit)
+      return minPriceBefore-promo_rule.discount_unit
+    }
+  })
+  let minPriceAfterDiscount = minPriceAfterArray.reduce((prev, curr)=>{
+    return prev < curr?prev:curr;
+  })
+  return minPriceAfterDiscount
+ }
   
 
 
   render() {
+    
     let val =  this.state.camp_feature
     return (
       <>
@@ -184,7 +211,7 @@ class PromoUserList extends Component {
                 return this.state.loading ? (
                   <></>
                 ) : (
-                  <PromoCampCard key={campsite.camp_id} campsite_data={campsite} camp_img={this.state.camp_img.filter(img=> img.camp_id ==  campsite.camp_id)} camp_feature={this.state.camp_feature.filter(feature=>feature.camp_id == campsite.camp_id)} promo_rules={this.state.promo}/>
+                  <PromoCampCard key={campsite.camp_id} campsite_data={campsite} camp_img={this.state.camp_img.filter(img=> img.camp_id ==  campsite.camp_id)} camp_feature={this.state.camp_feature.filter(feature=>feature.camp_id == campsite.camp_id)} promo_rules={this.state.promo} getMinPriceBeforeDiscount={this.getMinPriceBeforeDiscount} getMinPriceAfterDiscount={this.getMinPriceAfterDiscount}/>
                 )
               })}
                 </div>

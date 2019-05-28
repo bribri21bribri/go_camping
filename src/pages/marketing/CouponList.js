@@ -47,6 +47,7 @@ class CouponList extends React.Component {
         }),
       })
       // console.log(response)
+      
 
       const response_count = await fetch(url_count, {
         method: 'GET',
@@ -56,15 +57,21 @@ class CouponList extends React.Component {
           'Content-Type': 'application/json',
         }),
       })
+      
 
+      let data={
+        account:localStorage.getItem('account')
+      }
+      
       const response_records = await fetch('http://localhost:3001/getcouponrecords', {
-        method: 'GET',
+        method: 'POST',
         credentials: 'include',
         headers: new Headers({
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
         }),
-      })
+        body:JSON.stringify(data)
+        })
       
       
       if (!response.ok) throw new Error(response.statusText)
@@ -82,6 +89,7 @@ class CouponList extends React.Component {
       let coupons = responseJsonObject.coupons
       let totalPages = Math.ceil(response_count_JsonObject.totalCount/10)
       let coupon_records = response_records_JsonObject.records
+      console.log(coupon_records)
       // console.log(responseJsonObject)
       await this.setState({ coupons: coupons,totalPages:totalPages,coupon_records:coupon_records })
      
@@ -206,8 +214,9 @@ handleClick= async(coupon_data)=>{
     if (!response.ok) throw new Error(response.statusText)
 
     const responseJsonObject = await response.json()
-    // console.log(responseJsonObject)
-    await this.setState({coupon_code_obtained:responseJsonObject[0].coupon_code?responseJsonObject[0].coupon_code:'',show_modal:true})
+
+    console.log(responseJsonObject)
+    await this.setState({coupon_code_obtained:responseJsonObject[0].coupon_code?responseJsonObject[0].coupon_code:'',show_modal:true,coupon_records:[responseJsonObject[0],...this.state.coupon_records]})
 
 }
 
