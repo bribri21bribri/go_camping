@@ -1,0 +1,122 @@
+/* 蓋過已設定的CSS */
+.fs-20 {
+  font-size: 20px;
+}
+.fw-light {
+  font-weight: 300;
+}
+.fw-regular {
+  font-weight: 400;
+}
+.fw-medium {
+  font-weight: 500;
+}
+main .show::after {
+  background-color: transparent !important;
+}
+
+/* 登入畫面 */
+.login_cover {
+  height: calc(100vh - 120px);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.forgetPassword {
+  color: #707070;
+}
+.forgetPassword:hover,
+.forgetPassword:active {
+  color: #027252;
+}
+.register:hover,
+.register:active {
+  color: #027252;
+}
+.camp_boss {
+  color: #cccccc;
+}
+.camp_boss:hover,
+.camp_boss:active {
+  color: #027252;
+}
+
+/* 個人卡片 */
+.profile {
+  box-shadow: 1px 2px 5px #ccc;
+}
+.avatar {
+  width: 120px;
+  height: 120px;
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.level_badge {
+  width: 25px;
+  height: 25px;
+  color: #ffffff;
+  font-size: 12px;
+  text-align: center;
+  border-radius: 50%;
+}
+
+/* 左方導覽列 */
+aside .box {
+  width: 25px;
+  height: 25px;
+}
+aside a {
+  color: #707070;
+}
+aside a:hover {
+  color: #f2ce63;
+}
+.activeAside {
+  color: #87b061;
+  border-bottom: 2px solid #87b061;
+}
+
+/* 右方主頁面 */
+/* (1)通知設定 */
+.custom-control-label:before {
+  background-color: rgba(204, 204, 204, 0.5);
+}
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+  background-color: #027252;
+}
+/* (2) 個人資料編輯 */
+.asterisk {
+  color: red;
+}
+/* (3) 訂單管理 */
+.order_avatar {
+  width: 150px;
+  height: 150px;
+}
+.order_avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* (4) 折價券 */
+/* .coupon_code {
+  border: 1px solid #027252;
+} */
+/* (5) 最愛清單 */
+/* (6) 文章管理 */
+/* (7) 會員等級 */
+.level_thead {
+  background-color: rgba(204, 204, 204, 0.5);
+}
+.level_one,
+.level_two,
+.level_three {
+  width: 40px;
+  height: 40px;
+  color: #ffffff;
+  font-size: 20px;
+  text-align: center;
+  border-radius: 50%;
+}

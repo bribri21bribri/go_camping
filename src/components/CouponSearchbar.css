@@ -5,4 +5,15 @@
   width: auto;
   cursor: pointer;
   color: #fff;
+  /* padding: 0.5rem; */
+  font-size: 20px;
+}
+.search_wrap {
+  display: inline-flex;
+  width: 100%;
+}
+.searchbar_input {
+  flex: 1 1 300px;
+}
+@media (max-width: 992px) {
 }

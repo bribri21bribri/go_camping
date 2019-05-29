@@ -5,8 +5,8 @@ import './PromoCampCard.css'
    constructor(props){
      super(props)
      this.state={
-      // liked:this.props.campsite_data.rating_avg,
-      rating_avg:this.props.campsite_data.rating_avg,
+      liked:this.props.camp_liked,
+      // rating_avg:this.props.campsite_data.rating_avg,
      }
    }
 
@@ -31,7 +31,7 @@ import './PromoCampCard.css'
    handle_like_btn_click=async()=>{
     if(!this.state.liked){
       let data ={
-        account:localStorage.getItem('account')?localStorage.getItem('account'):false,
+        account:localStorage.getItem('mem_account')?localStorage.getItem('mem_account'):false,
         camp_id:this.props.campsite_data.camp_id
       }
       const response = await fetch("http://localhost:3001/insertcampliked",{
@@ -42,7 +42,7 @@ import './PromoCampCard.css'
         }),
         body:JSON.stringify(data)
       })
-
+     
       if (!response.ok) throw new Error(response.statusText)
     
       
@@ -53,7 +53,7 @@ import './PromoCampCard.css'
 
     }else{
       let data ={
-        account:localStorage.getItem('account')?localStorage.getItem('account'):false,
+        account:localStorage.getItem('mem_account')?localStorage.getItem('mem_account'):false,
         camp_id:this.props.campsite_data.camp_id
       }
       const response = await fetch("http://localhost:3001/deletecampliked",{
@@ -99,14 +99,15 @@ import './PromoCampCard.css'
                     <ul>
                       <li className="camp_loca"><i className="fas fa-map-marker-alt"></i>{this.props.campsite_data?this.props.campsite_data.city:''},{this.props.campsite_data?this.props.campsite_data.dist:''}</li>
                       <li className="camp_name">{this.props.campsite_data?this.props.campsite_data.camp_name:''}</li>
-                      <li>
+                      {/* <li>
                         <div className="stars-outer">
                           <div className="stars-inner" style={{width:this.state.rating_avg?this.getRatingsWidth():'0'}}></div>
                           <span style={{color:"#f2ce63"}}> {this.getRating()}</span>
                         </div>
-                      </li>
-                      <li className="camp_feature">{this.props.camp_feature?this.props.camp_feature.map(feature=><><i className="fas fa-hashtag"></i><span>{feature.camp_type}</span></>):''}</li>
-                      <li><i className="far fa-compass"></i></li>
+                      </li> */}
+                      <li className="camp_feature">{this.props.campsite_data?this.props.campsite_data.camp_intro:''}</li>
+                      {/* <li className="camp_feature">{this.props.camp_feature?this.props.camp_feature.map(feature=><><i className="fas fa-hashtag"></i><span>{feature.camp_type}</span></>):''}</li> */}
+                      
                     </ul>
                   </div>
                   <div className='campsite_info_price'>

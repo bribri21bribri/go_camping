@@ -1,11 +1,11 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Switch,Link } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch,Link,Redirect } from 'react-router-dom'
 
 import Pagination from '../../components/Pagination'
 import CouponSearchbar from '../../components/CouponSearchbar'
 
 import '../../components/Default.css'
-import './PromoList.css'
+// import './PromoList.css'
 import Coupon from '../../components/Coupon'
 import CouponModal from '../../components/CouponModal'
 
@@ -21,7 +21,8 @@ class CouponList extends React.Component {
       currentPage:1,
       totalPages:0,
       show_modal: false,
-      coupon_code_obtained:''
+      coupon_code_obtained:'',
+      redirect:false
     }
   }
 
@@ -60,7 +61,7 @@ class CouponList extends React.Component {
       
 
       let data={
-        account:localStorage.getItem('account')
+        account:localStorage.getItem('mem_account')
       }
       
       const response_records = await fetch('http://localhost:3001/getcouponrecords', {
@@ -194,30 +195,34 @@ closeModalHandler = () => {
 }
 
 handleClick= async(coupon_data)=>{
-  // console.log(coupon_data)
+
   let mem_account = localStorage.getItem('account')
   let coupon_genre = coupon_data.coupon_genre_id
-  let data = {
-    mem_account:mem_account,
-    coupon_genre:coupon_genre
+  if(mem_account){
+    let data = {
+      mem_account:mem_account,
+      coupon_genre:coupon_genre
+    }
+    const response = await fetch('http://localhost:3001/obtaincoupon', {
+        method: 'POST',
+        credentials: 'include',
+        headers: new Headers({
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        }),
+        body:JSON.stringify(data)
+      })
+      console.log(response)
+      if (!response.ok) throw new Error(response.statusText)
+  
+      const responseJsonObject = await response.json()
+  
+      console.log(responseJsonObject)
+      await this.setState({coupon_code_obtained:responseJsonObject[0].coupon_code?responseJsonObject[0].coupon_code:'',show_modal:true,coupon_records:[responseJsonObject[0],...this.state.coupon_records]})
+
+  }else{
+    this.props.history.push('/Login')
   }
-  const response = await fetch('http://localhost:3001/obtaincoupon', {
-      method: 'POST',
-      credentials: 'include',
-      headers: new Headers({
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      }),
-      body:JSON.stringify(data)
-    })
-
-    if (!response.ok) throw new Error(response.statusText)
-
-    const responseJsonObject = await response.json()
-
-    console.log(responseJsonObject)
-    await this.setState({coupon_code_obtained:responseJsonObject[0].coupon_code?responseJsonObject[0].coupon_code:'',show_modal:true,coupon_records:[responseJsonObject[0],...this.state.coupon_records]})
-
 }
 
   render() {
@@ -229,25 +234,22 @@ handleClick= async(coupon_data)=>{
                     close={this.closeModalHandler} coupon_code_obtained={this.state.coupon_code_obtained?this.state.coupon_code_obtained:''}/>
         <div className="container">
           <div className="row">
-            <div className="col-md-3" >
-              <CouponSearchbar onSubmit={this.onSubmit} onChange={this.onChange} keyword={this.state.keyword}/>
+            <div className="col-lg-3" >
+              
             </div>
-            <div className="col-md-9">
+            <div className="col-lg-9">
               <nav className="bread_crumb mt-1 mb-3">
                 <ul className="d-flex">
-                  <li>
-                    <a>
+                <li>
+                    <Link to="/">
                       <i className="fas fa-home" />
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a>搶優惠</a>
+                    <span> &gt; </span><Link to="/Marketing">搶優惠</Link>
                   </li>
                   <li>
-                    <a>優惠專區</a>
-                  </li>
-                  <li>
-                    <a>會員優惠</a>
+                    <span> &gt; </span><a>優惠券</a>
                   </li>
                 </ul>
               </nav>
@@ -255,13 +257,14 @@ handleClick= async(coupon_data)=>{
           </div>
 
           <div className="row" id="promo_item_list">
-          <div className="col-md-3">
+          <div className="col-lg-3">
+            <CouponSearchbar onSubmit={this.onSubmit} onChange={this.onChange} keyword={this.state.keyword}/>
               <h5 className="fs-24 forest mb-3">搶優惠</h5>
               <div>
               <h6 className="fs-20 grass mb-2">優惠專區</h6>
                 <ul className="mb-2">
                   
-                  <li className="side_menu_link "><Link className="wood fs-20" to="/PromoUserList">會員優惠</Link></li>
+                  <li className="side_menu_link "><Link className="fs-20" to="/PromoUserList">會員優惠</Link></li>
                   <li className="side_menu_link "><Link className="fs-20" to="/PromoCamptypeList">營地分類優惠</Link></li>
                   <li className="side_menu_link"><Link className="fs-20" to="/PromoPriceList">滿額折扣</Link></li>
                 </ul>
@@ -272,7 +275,7 @@ handleClick= async(coupon_data)=>{
                 </ul>
               </div>
             </div>
-            <div className="col-md-9">
+            <div className="col-lg-9">
               <h4 className="grass fs-32">優惠券</h4>
               {this.state.coupons.map(coupon => {
                 let disabled = false

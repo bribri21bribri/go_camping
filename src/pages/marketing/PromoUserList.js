@@ -44,7 +44,7 @@ class PromoUserList extends Component {
      
       
 
-      await this.setState({ campsites: responseJsonObject.campsites,totalPages:totalPages,promo: responseJsonObject.promo_rules,camp_img:responseJsonObject.camp_images,camp_feature:responseJsonObject.camp_features })
+      await this.setState({ campsites: responseJsonObject.campsites,totalPages:totalPages,promo: responseJsonObject.promo_rules,camp_img:responseJsonObject.camp_img,camp_feature:responseJsonObject.camp_features,camp_liked:responseJsonObject.camp_liked })
       // // console.log(this.state.coupons[0].coupon_name)
       this.setState({ loading: false })
     } catch (e) {
@@ -85,12 +85,12 @@ class PromoUserList extends Component {
 
       
       const responseJsonObject = await response.json()
-     
-      let campsites = responseJsonObject
+      console.log(responseJsonObject.camp_img)
+      
       let totalPages = Math.ceil(responseJsonObject.total/6)
       
 
-      await this.setState({ campsites: responseJsonObject.campsites,totalPages:totalPages,promo: responseJsonObject.promo_rules,camp_img:responseJsonObject.camp_images,camp_feature:responseJsonObject.camp_features })
+      await this.setState({ campsites: responseJsonObject.campsites,totalPages:totalPages,promo: responseJsonObject.promo_rules,camp_img:responseJsonObject.camp_img,camp_feature:responseJsonObject.camp_features })
       
       this.setState({ loading: false })
     } catch (e) {
@@ -105,30 +105,35 @@ getMinPriceBeforeDiscount = (camp_feature) =>{
   })
   return minPrice
  }
- getMinPriceAfterDiscount = (camp_feature, promo_rules) =>{
-  let minPriceBefore = camp_feature.reduce((prev, curr)=>{
-    return prev.camp_pricew < curr.camp_pricew? prev.camp_pricew: curr.camp_pricew
-  })
-  let minPriceAfterArray = promo_rules.map(promo_rule=>{
-    if(promo_rule.discount_type=='percentage'){
-      console.log(promo_rule.discount_unit)
-      return minPriceBefore*('0.'+promo_rule.discount_unit)
-    }else{
-      console.log(promo_rule.discount_unit)
-      return minPriceBefore-promo_rule.discount_unit
-    }
-  })
-  let minPriceAfterDiscount = minPriceAfterArray.reduce((prev, curr)=>{
-    return prev < curr?prev:curr;
-  })
-  return minPriceAfterDiscount
- }
+//  getMinPriceAfterDiscount = (camp_feature, promo_rules) =>{
+//   let minPriceBefore = camp_feature.reduce((prev, curr)=>{
+//     return prev.camp_pricew < curr.camp_pricew? prev.camp_pricew: curr.camp_pricew
+//   })
+//   let minPriceAfterArray = promo_rules.map(promo_rule=>{
+//     if(promo_rule.discount_type=='percentage'){
+//       console.log(promo_rule.discount_unit)
+//       return minPriceBefore*('0.'+promo_rule.discount_unit)
+//     }else{
+//       console.log(promo_rule.discount_unit)
+//       return minPriceBefore-promo_rule.discount_unit
+//     }
+//   })
+//   let minPriceAfterDiscount = minPriceAfterArray.reduce((prev, curr)=>{
+//     return prev < curr?prev:curr;
+//   })
+//   return minPriceAfterDiscount
+//  }
   
+ toDateString=(d)=>{
+   d = new Date(d+'').toLocaleDateString().split('/')
+  let s = d[0]+"年"+d[1]+"月"+d[2]+"日"
+  return s
+}
 
 
   render() {
     
-    let val =  this.state.camp_feature
+    // console.log(this.state.camp_img)
     return (
       <>
         <div className="container">
@@ -138,18 +143,15 @@ getMinPriceBeforeDiscount = (camp_feature) =>{
               <nav className="bread_crumb mt-1 mb-3">
                 <ul className="d-flex">
                   <li>
-                    <a>
+                    <Link to="/">
                       <i className="fas fa-home" />
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a>搶優惠</a>
+                    <span> &gt; </span><Link to="/Marketing">搶優惠</Link>
                   </li>
                   <li>
-                    <a>優惠專區</a>
-                  </li>
-                  <li>
-                    <a>會員優惠</a>
+                    <span> &gt; </span><Link>會員優惠</Link>
                   </li>
                 </ul>
               </nav>
@@ -183,7 +185,24 @@ getMinPriceBeforeDiscount = (camp_feature) =>{
                 <div>
                 <div className="promo_discription_img" style={{backgroundImage: "url(" + 'assets/img/campsite3.jpg' + ")"}}><h4>會員優惠</h4></div>
                 <div className="promo_discription_content">
-                  <div>
+                  {
+                    this.state.promo.map(p=>{
+                      return this.state.loading? (
+                        <></>
+                      ):(
+                        <ul>
+                          <li><span>優惠名稱: </span>{p.promo_name}</li>
+                          <li>
+                            <ul style={{textIndent : '36px'}}>
+                              <li><span>優惠說明: </span>{p.discription}</li>
+                              <li><span>優惠期間: </span>{this.toDateString(p.start)}至{this.toDateString(p.end)}</li>
+                            </ul>
+                          </li>
+                        </ul>
+                      )
+                    })
+                  }
+                  {/* <div>
                     <ul>
                       <li></li>
                       <li></li>
@@ -200,7 +219,7 @@ getMinPriceBeforeDiscount = (camp_feature) =>{
                         </ul>
                       </li>
                     </ul>
-                  </div>
+                  </div> */}
                 </div>
                 </div>
               </div>
@@ -211,7 +230,7 @@ getMinPriceBeforeDiscount = (camp_feature) =>{
                 return this.state.loading ? (
                   <></>
                 ) : (
-                  <PromoCampCard key={campsite.camp_id} campsite_data={campsite} camp_img={this.state.camp_img.filter(img=> img.camp_id ==  campsite.camp_id)} camp_feature={this.state.camp_feature.filter(feature=>feature.camp_id == campsite.camp_id)} promo_rules={this.state.promo} getMinPriceBeforeDiscount={this.getMinPriceBeforeDiscount} getMinPriceAfterDiscount={this.getMinPriceAfterDiscount}/>
+                  <PromoCampCard key={campsite.camp_id} campsite_data={campsite} camp_liked= {localStorage.getItem('mem_account')? this.state.camp_liked.filter(like=> like.camp_id ==  campsite.camp_id && like.account == localStorage.getItem('mem_account')).length>0?true:false:false} camp_img={this.state.camp_img.filter(img=> img.camp_id ==  campsite.camp_id)} camp_feature={this.state.camp_feature.filter(feature=>feature.camp_id == campsite.camp_id)} promo_rules={this.state.promo} getMinPriceBeforeDiscount={this.getMinPriceBeforeDiscount} />
                 )
               })}
                 </div>

@@ -14,18 +14,18 @@ import './CouponSearchbar.css'
   render() {
     return (
       <>
-      <form onSubmit={(e)=>{
+      <form className="mb-3" onSubmit={(e)=>{
         console.log(e)
         e.preventDefault()
         return this.props.onSubmit(this.props.keyword)
         }}>
-        <div className="d-flex">
-          <div>
-            <input onChange={this.props.onChange} type="text"/>
-          </div>
-          <div>
+        <div className="search_wrap">
+          
+            <input className='searchbar_input' onChange={this.props.onChange} type="text"/>
+          
+         
             <button className="search_btn" type="submit"><i className="fas fa-search"></i></button>
-          </div>
+          
         </div>
         </form>
       </>

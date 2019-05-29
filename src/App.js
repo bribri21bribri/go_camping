@@ -13,16 +13,40 @@ import CouponList from './pages/marketing/CouponList'
 import PromoUserList from './pages/marketing/PromoUserList'
 import PromoCamptypeList from './pages/marketing/PromoCamptypeList'
 import PromoPriceList from './pages/marketing/PromoPriceList'
+import Login from './pages/member/Login'
+import Register from './pages/member/Register'
+import Logout from './pages/member/Logout'
 import './App.css';
-import './components/Default.css'
+// import './components/Default.css'
 
-function App(){
-  return(
-    <Router>
-      <>
-        <Header />
+class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      isAuthenticated: false,
+      isntAuthenticated: false,
+    }
+  }
 
-        <Switch>
+  toggleLogin = () => {
+    this.setState({ isAuthenticated: true })
+    this.setState({ isntAuthenticated: false })
+    // console.log('toggleLogin:' + this.state.isAuthenticated)
+  }
+
+  toggleLogout = () => {
+    this.setState({ isAuthenticated: false })
+    this.setState({ isntAuthenticated: true })
+    // console.log('toggleLogout:' + this.state.isntAuthenticated)
+  }
+
+  render() {
+    return (
+      <Router>
+        <>
+          <Header isAuthenticated={this.state.isAuthenticated} isntAuthenticated={this.state.isntAuthenticated}  />
+
+          <Switch>
           <Route exact path="/" component={Index} />
           <Route exact path="/CampSide" component={CampSide} />
           <Route path="/Event" component={Event} />
@@ -34,11 +58,16 @@ function App(){
           <Route path="/PromoCamptypeList" component={PromoCamptypeList}/>
           <Route path="/PromoPriceList" component={PromoPriceList}/>
           <Route path="/CouponList" component={CouponList}/>
-        </Switch>
+          <Route path="/Login" render={(props) => <Login toggleLogin={this.toggleLogin} {...props} />} />
+          <Route path="/Register" render={(props) => <Register toggleLogin={this.toggleLogin} {...props} />} />
+          <Route path="/Logout" render={(props) => <Logout toggleLogout={this.toggleLogout} {...props} />} />
+          </Switch>
 
-        <Footer />
-      </>
-    </Router>
-  )
+          <Footer />
+        </>
+      </Router>
+    )
+  }
 }
+
 export default App;

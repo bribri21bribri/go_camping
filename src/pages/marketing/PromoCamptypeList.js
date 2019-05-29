@@ -87,24 +87,30 @@ class PromoCamptypeList extends Component {
     })
     return minPrice
    }
-   getMinPriceAfterDiscount = (camp_feature, promo_rules) =>{
-    let minPriceBefore = camp_feature.reduce((prev, curr)=>{
-      return prev.camp_pricew < curr.camp_pricew? prev.camp_pricew: curr.camp_pricew
-    })
-    let minPriceAfterArray = promo_rules.map(promo_rule=>{
-      if(promo_rule.discount_type=='percentage'){
-        console.log(promo_rule.discount_unit)
-        return minPriceBefore*('0.'+promo_rule.discount_unit)
-      }else{
-        console.log(promo_rule.discount_unit)
-        return minPriceBefore-promo_rule.discount_unit
-      }
-    })
-    let minPriceAfterDiscount = minPriceAfterArray.reduce((prev, curr)=>{
-      return prev < curr?prev:curr;
-    })
-    return minPriceAfterDiscount
-   }
+  //  getMinPriceAfterDiscount = (camp_feature, promo_rules) =>{
+  //   let minPriceBefore = camp_feature.reduce((prev, curr)=>{
+  //     return prev.camp_pricew < curr.camp_pricew? prev.camp_pricew: curr.camp_pricew
+  //   })
+  //   let minPriceAfterArray = promo_rules.map(promo_rule=>{
+  //     if(promo_rule.discount_type=='percentage'){
+  //       console.log(promo_rule.discount_unit)
+  //       return minPriceBefore*('0.'+promo_rule.discount_unit)
+  //     }else{
+  //       console.log(promo_rule.discount_unit)
+  //       return minPriceBefore-promo_rule.discount_unit
+  //     }
+  //   })
+  //   let minPriceAfterDiscount = minPriceAfterArray.reduce((prev, curr)=>{
+  //     return prev < curr?prev:curr;
+  //   })
+  //   return minPriceAfterDiscount
+  //  }
+
+   toDateString=(d)=>{
+    d = new Date(d+'').toLocaleDateString().split('/')
+   let s = d[0]+"年"+d[1]+"月"+d[2]+"日"
+   return s
+ }
   
 
 
@@ -118,18 +124,16 @@ class PromoCamptypeList extends Component {
               <nav className="bread_crumb mt-1 mb-3">
                 <ul className="d-flex">
                   <li>
-                    <a>
+                  <Link to="/">
                       <i className="fas fa-home" />
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a>搶優惠</a>
+                    <span> &gt; </span><Link to="/Marketing">搶優惠</Link>
                   </li>
+                  
                   <li>
-                    <a>優惠專區</a>
-                  </li>
-                  <li>
-                    <a>會員優惠</a>
+                    <span> &gt; </span><Link>會員優惠</Link>
                   </li>
                 </ul>
               </nav>
@@ -163,7 +167,24 @@ class PromoCamptypeList extends Component {
                 <div>
                 <div className="promo_discription_img" style={{backgroundImage: "url(" + 'assets/img/campsite3.jpg' + ")"}}><h4>營地分類優惠</h4></div>
                 <div className="promo_discription_content">
-                  <div>
+                {
+                    this.state.promo.map(p=>{
+                      return this.state.loading? (
+                        <></>
+                      ):(
+                        <ul>
+                          <li><span>優惠名稱: </span>{p.promo_name}</li>
+                          <li>
+                            <ul style={{textIndent : '36px'}}>
+                              <li><span>優惠說明: </span>{p.discription}</li>
+                              <li><span>優惠期間: </span>{this.toDateString(p.start)}至{this.toDateString(p.end)}</li>
+                            </ul>
+                          </li>
+                        </ul>
+                      )
+                    })
+                  }
+                  {/* <div>
                     <ul>
                       <li></li>
                       <li></li>
@@ -180,7 +201,7 @@ class PromoCamptypeList extends Component {
                         </ul>
                       </li>
                     </ul>
-                  </div>
+                  </div> */}
                 </div>
                 </div>
               </div>
@@ -191,7 +212,7 @@ class PromoCamptypeList extends Component {
                 return this.state.loading ? (
                   <></>
                 ) : (
-                  <PromoCampCard key={campsite.camp_id} campsite_data={campsite} camp_img={this.state.camp_img.filter(img=> img.camp_id ==  campsite.camp_id)} camp_feature={this.state.camp_feature.filter(feature=>feature.camp_id == campsite.camp_id)} promo_rules={this.state.promo} getMinPriceBeforeDiscount={this.getMinPriceBeforeDiscount} getMinPriceAfterDiscount={this.getMinPriceAfterDiscount}/>
+                  <PromoCampCard key={campsite.camp_id} campsite_data={campsite} camp_img={this.state.camp_img.filter(img=> img.camp_id ==  campsite.camp_id)} camp_feature={this.state.camp_feature.filter(feature=>feature.camp_id == campsite.camp_id)} promo_rules={this.state.promo} getMinPriceBeforeDiscount={this.getMinPriceBeforeDiscount} />
                 )
               })}
                 </div>
